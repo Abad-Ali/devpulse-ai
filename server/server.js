@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import connectDB from "./config/db.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 8000;
@@ -12,6 +13,17 @@ app.get("/api/v1/health", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`DevPulse AI server is running on port ${PORT}`);
-})
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    app.listen(PORT, () => {
+      console.log(`DevPulse AI server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
