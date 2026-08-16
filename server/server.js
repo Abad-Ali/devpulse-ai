@@ -1,10 +1,15 @@
 import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
+import authRoutes from "./routes/auth.routes.js";
+import { errorMiddleware } from "./middleware/error.middleware.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 8000;
 const app = express();
+
+//middlerwares
+app.use(express.json());
 
 app.get("/api/v1/health", (req, res) => {
   res.json({
@@ -12,6 +17,12 @@ app.get("/api/v1/health", (req, res) => {
     message: "DevPulse AI server is running...",
   });
 });
+
+// Routes
+app.use("/api/v1/auth", authRoutes);
+
+// Error handler
+app.use(errorMiddleware);
 
 const startServer = async () => {
   try {
