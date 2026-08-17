@@ -89,3 +89,44 @@ export const logout = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const googleCallback = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Google authentication failed",
+      });
+    }
+
+    const accessToken = generateAccessToken(user);
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // return res.redirect(
+    //   `${process.env.CLIENT_URL}/`
+    // );
+
+    return res.status(200).json({
+      success: true,
+      message: "Google authentication successful",
+      user: {
+        id: user._id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};

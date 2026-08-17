@@ -1,17 +1,18 @@
+import "dotenv/config";
 import express from "express";
-import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
 import { errorMiddleware } from "./middleware/error.middleware.js";
 import cookieParser from "cookie-parser";
+import passport from "./config/passport.js";
 
-dotenv.config();
 const PORT = process.env.PORT || 8000;
 const app = express();
 
 //middlerwares
 app.use(express.json());
 app.use(cookieParser());
+app.use(passport.initialize());
 
 app.get("/api/v1/health", (req, res) => {
   res.json({
