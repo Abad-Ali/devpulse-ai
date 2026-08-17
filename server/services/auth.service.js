@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 
+// RegisterUser Service
 export const registerUser = async ({name, username, email, password}) => {
-
   if (!name || !username || !email || !password) {
     const error = new Error("Name, username, email and password are required.");
     error.statusCode = 400;
@@ -50,6 +50,65 @@ export const registerUser = async ({name, username, email, password}) => {
       },
     ],
   });
+
+  return {
+    id: user._id,
+    name: user.name,
+    username: user.username,
+    email: user.email,
+    bio: user.bio,
+    avatar: user.avatar,
+    role: user.role,
+    accountType: user.accountType,
+    isEmailVerified: user.isEmailVerified,
+    createdAt: user.createdAt,
+  };
+};
+
+// LoginUser Service
+export const loginUser = async ({ email, password }) => {
+  if (!email || !password) {
+    const error = new Error("Email and password are required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+
+  // Find user and explicitly include passwordHash
+  const user = await User.findOne({email: normalizedEmail}).select("+passwordHash");
+
+  if (!user) {
+    const error = new Error("Invalid email or password.");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  // Check whether account is active
+  if (!user.isActive) {
+    const error = new Error("Your account is inactive.");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  // Account may exist through Google/GitHub without a password
+  if (!user.passwordHash) {
+    const error = new Error("This account does not have a password. Please use your connected login provider.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Compareing password
+  const isPasswordCorrect = await bcrypt.compare(
+    password,
+    user.passwordHash
+  );
+
+  if (!isPasswordCorrect) {
+    const error = new Error("Invalid email or password.");
+    error.statusCode = 401;
+    throw error;
+  }
 
   return {
     id: user._id,
