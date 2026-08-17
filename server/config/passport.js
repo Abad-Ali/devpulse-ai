@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "../models/User.js";
-
+import { Strategy as GitHubStrategy } from "passport-github2";
 
 // console.log("GOOGLE_CLIENT_ID:", process.env.GOOGLE_CLIENT_ID);
 // console.log(
@@ -74,6 +74,87 @@ passport.use(
             {
               provider: "google",
               providerId: googleId,
+            },
+          ],
+        });
+
+        return done(null, user);
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
+);
+
+
+passport.use(
+  new GitHubStrategy(
+    {
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      callbackURL: process.env.GITHUB_CALLBACK_URL,
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        const githubId = profile.id;
+
+        // GitHub may provide multiple emails
+        const email = profile.emails?.find((item) => item.primary)?.value || profile.emails?.[0]?.value;
+
+        const name = profile.displayName || profile.username || `github_${githubId}`;
+
+        const avatar = profile.photos?.[0]?.value || "";
+
+        if (!email) {
+          return done(new Error("GitHub account email not available."));
+        }
+
+        // Find existing GitHub account
+        let user = await User.findOne({
+          authProviders: {
+            $elemMatch: {
+              provider: "github",
+              providerId: githubId,
+            },
+          },
+        });
+
+        if (user) {
+          return done(null, user);
+        }
+
+        //Check if this email already belongs to another account
+        user = await User.findOne({email: email.toLowerCase(),});
+
+        if (user) {
+          return done(
+            new Error(
+              "An account with this email already exists. Please log in using your existing method."
+            )
+          );
+        }
+
+        //Generate username
+        const usernameBase = (profile.username || email.split("@")[0]).toLowerCase().replace(/[^a-z0-9_]/g, "");
+
+        let username = usernameBase || `github${githubId}`;
+
+        //Make sure username is unique
+        const usernameExists = await User.findOne({username});
+
+        if (usernameExists) {username = `${username}${Date.now().toString().slice(-4)}`;}
+
+        //Create new user
+        user = await User.create({
+          name,
+          username,
+          email: email.toLowerCase(),
+          avatar,
+          isEmailVerified: true,
+          authProviders: [
+            {
+              provider: "github",
+              providerId: githubId,
             },
           ],
         });

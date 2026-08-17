@@ -1,5 +1,5 @@
 import express from 'express';
-import { getMe, googleCallback, login, logout, register } from '../controllers/auth.controller.js';
+import { getMe, login, logout, oauthCallback, register } from '../controllers/auth.controller.js';
 import { isAuthenticated } from '../middleware/isAuthenticated.js';
 import passport from "passport";
 
@@ -16,13 +16,26 @@ router.get(
     scope: ["profile", "email"],
   })
 );
-
 router.get(
   "/google/callback",
   passport.authenticate("google", {
     session: false,
   }),
-  googleCallback
+  oauthCallback
+);
+
+router.get(
+  "/github",
+  passport.authenticate("github", {
+    scope: ["user:email"],
+  })
+);
+router.get(
+  "/github/callback",
+  passport.authenticate("github", {
+    session: false,
+  }),
+  oauthCallback
 );
 
 export default router;
