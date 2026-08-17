@@ -45,3 +45,47 @@ export const login = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const getMe = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    return res.status(200).json({
+      success: true,
+      user: {
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        bio: user.bio,
+        avatar: user.avatar,
+        role: user.role,
+        accountType: user.accountType,
+        isEmailVerified: user.isEmailVerified,
+        createdAt: user.createdAt,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const logout = async (req, res, next) => {
+  try {
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite:
+        process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Logout successful.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
 import { errorMiddleware } from "./middleware/error.middleware.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const PORT = process.env.PORT || 8000;
@@ -10,6 +11,7 @@ const app = express();
 
 //middlerwares
 app.use(express.json());
+app.use(cookieParser());
 
 app.get("/api/v1/health", (req, res) => {
   res.json({
