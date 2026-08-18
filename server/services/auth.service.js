@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import { generateSecureToken, hashToken } from "../utils/verificationToken.js";
-import { sendVerificationEmail } from "./email.service.js";
+import { sendPasswordResetEmail, sendVerificationEmail } from "./email.service.js";
 
 // RegisterUser Service
 export const registerUser = async ({ name, username, email, password }) => {
@@ -101,9 +101,7 @@ export const verifyEmailToken = async (token) => {
   });
 
   if (!user) {
-    const error = new Error(
-      "Invalid or expired verification link."
-    );
+    const error = new Error("Invalid or expired verification link.");
 
     error.statusCode = 400;
     throw error;
@@ -121,6 +119,118 @@ export const verifyEmailToken = async (token) => {
     id: user._id,
     email: user.email,
     isEmailVerified: user.isEmailVerified,
+  };
+};
+
+
+// ResendVerificationEmail
+export const resendVerificationEmail = async (email) => {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const user = await User.findOne({email: normalizedEmail});
+
+  // Not reveling is email exist
+  if (!user) {
+    return;
+  }
+
+  if (user.isEmailVerified) {
+    const error = new Error("Email is already verified.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Generate a NEW token every time
+  const {rawToken, hashedToken} = generateSecureToken();
+
+  // Replace the old token
+  user.emailVerificationToken = hashedToken;
+
+  // New token expires in 5 minutes
+  user.emailVerificationExpires = new Date(Date.now() + 5 * 60 * 1000);
+
+  await user.save();
+
+  // Create verification URL
+  const verificationUrl =`${process.env.CLIENT_URL}/verify-email?token=${encodeURIComponent(rawToken)}`;
+
+  await sendVerificationEmail({email: user.email, name: user.name, verificationUrl});
+};
+
+
+//RequestPasswordReset
+export const requestPasswordReset = async (email) =>{
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const user = await User.findOne({email: normalizedEmail});
+
+  // Not reveling is email exist
+  if (!user) {
+    return;
+  }
+
+  // Generate a NEW token every time
+  const {rawToken, hashedToken} = generateSecureToken();
+
+  //Adding passwordResetToken
+  user.passwordResetToken = hashedToken;
+
+  // New token expires in 5 minutes
+  user.passwordResetExpires = new Date(Date.now() + 5 * 60 * 1000);
+
+  await user.save();
+
+  // Create verification URL
+  const resetUrl =`${process.env.CLIENT_URL}/reset-password?token=${encodeURIComponent(rawToken)}`;
+
+  await sendPasswordResetEmail({email: user.email, name: user.name, resetUrl})
+}
+
+
+// ResetPassword
+export const resetPasswordService = async (token, newPassword) => {
+  if (!token || !newPassword) {
+    const error = new Error("Token and new password are required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (newPassword.length < 8) {
+    const error = new Error("Password must be at least 8 characters long.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Hash the token received from the frontend
+  const hashedToken = hashToken(token);
+
+  // Find user with matching token that has not expired
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: {$gt: new Date(),},
+  });
+
+  if (!user) {
+    const error = new Error("Invalid or expired password reset link.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Hash the new password
+  const passwordHash = await bcrypt.hash(newPassword, 12);
+
+  // Update password
+  user.passwordHash = passwordHash;
+
+  // Invalidate reset token
+  user.passwordResetToken = null;
+  user.passwordResetExpires = null;
+
+  await user.save();
+
+  return {
+    id: user._id,
+    email: user.email,
   };
 };
 

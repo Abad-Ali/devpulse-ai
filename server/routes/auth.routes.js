@@ -1,5 +1,5 @@
 import express from 'express';
-import { getMe, login, logout, oauthCallback, register, verifyEmail } from '../controllers/auth.controller.js';
+import { getMe, login, logout, oauthCallback, register, resendVerification, resetPassword, sendResetPassword, verifyEmail } from '../controllers/auth.controller.js';
 import { isAuthenticated } from '../middleware/isAuthenticated.js';
 import passport from "passport";
 
@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post("/register", register);
 router.get("/verify-email", verifyEmail);
+router.post("/resend-verification", resendVerification);
 router.post("/login", login);
 router.get("/me", isAuthenticated, getMe);
 router.post("/logout", logout);
@@ -39,4 +40,6 @@ router.get(
   oauthCallback
 );
 
+router.post("/forgot-password", sendResetPassword);
+router.post("/reset-password", resetPassword);
 export default router;

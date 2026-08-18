@@ -1,4 +1,4 @@
-import { loginUser, registerUser, verifyEmailToken } from "../services/auth.service.js";
+import { loginUser, registerUser, requestPasswordReset, resendVerificationEmail, resetPasswordService, verifyEmailToken } from "../services/auth.service.js";
 import { generateAccessToken } from "../utils/jwt.js";
 
 export const register = async (req, res, next) => {
@@ -28,6 +28,55 @@ export const verifyEmail = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: "Email verified successfully.",
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const resendVerification = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    await resendVerificationEmail(email);
+
+    return res.status(200).json({
+      success: true,
+      message: "If an account exists with this email, a verification email has been sent.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const sendResetPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    await requestPasswordReset(email);
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset email has been sent.",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+export const resetPassword = async (req, res, next) => {
+  try {
+    const {token, password} = req.body;
+
+    const user = await resetPasswordService(token, password);
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successfully.",
       user,
     });
   } catch (error) {
