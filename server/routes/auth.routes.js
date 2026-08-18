@@ -42,4 +42,5 @@ router.get(
 
 router.post("/forgot-password", sendResetPassword);
 router.post("/reset-password", resetPassword);
+
 export default router;
