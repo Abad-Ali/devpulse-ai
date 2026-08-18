@@ -1,8 +1,10 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
+import { generateSecureToken, hashToken } from "../utils/verificationToken.js";
+import { sendVerificationEmail } from "./email.service.js";
 
 // RegisterUser Service
-export const registerUser = async ({name, username, email, password}) => {
+export const registerUser = async ({ name, username, email, password }) => {
   if (!name || !username || !email || !password) {
     const error = new Error("Name, username, email and password are required.");
     error.statusCode = 400;
@@ -20,7 +22,7 @@ export const registerUser = async ({name, username, email, password}) => {
   const normalizedName = name.trim();
 
   // Check if email already exists
-  const existingEmail = await User.findOne({email: normalizedEmail});
+  const existingEmail = await User.findOne({ email: normalizedEmail });
   if (existingEmail) {
     const error = new Error("Email is already registered.");
     error.statusCode = 409;
@@ -28,7 +30,7 @@ export const registerUser = async ({name, username, email, password}) => {
   }
 
   // Check if username already exists
-  const existingUsername = await User.findOne({username: normalizedUsername});
+  const existingUsername = await User.findOne({ username: normalizedUsername });
   if (existingUsername) {
     const error = new Error("Username is already taken.");
     error.statusCode = 409;
@@ -37,6 +39,12 @@ export const registerUser = async ({name, username, email, password}) => {
 
   // Hashing password
   const passwordHash = await bcrypt.hash(password, 12);
+
+  // Generate email verification token
+  const { rawToken, hashedToken } = generateSecureToken();
+
+  // Token expires in 5 minutes
+  const verificationExpires = new Date(Date.now() + 5 * 60 * 1000);
 
   // Creating new user
   const user = await User.create({
@@ -49,7 +57,16 @@ export const registerUser = async ({name, username, email, password}) => {
         provider: "email",
       },
     ],
+    isEmailVerified: false,
+    emailVerificationToken: hashedToken,
+    emailVerificationExpires: verificationExpires,
   });
+
+   // Create verification URL
+  const verificationUrl = `${process.env.CLIENT_URL}/verify-email?token=${encodeURIComponent(rawToken)}`;
+
+  // Send email
+  await sendVerificationEmail({email: user.email, name: user.name, verificationUrl});
 
   return {
     id: user._id,
@@ -65,6 +82,49 @@ export const registerUser = async ({name, username, email, password}) => {
   };
 };
 
+
+// VerifyEmailToken
+export const verifyEmailToken = async (token) => {
+  if (!token) {
+    const error = new Error("Verification token is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const hashedToken = hashToken(token);
+
+  const user = await User.findOne({
+    emailVerificationToken: hashedToken,
+    emailVerificationExpires: {
+      $gt: new Date(),
+    },
+  });
+
+  if (!user) {
+    const error = new Error(
+      "Invalid or expired verification link."
+    );
+
+    error.statusCode = 400;
+    throw error;
+  }
+
+  user.isEmailVerified = true;
+
+  // Invalidate the token after successful verification
+  user.emailVerificationToken = null;
+  user.emailVerificationExpires = null;
+
+  await user.save();
+
+  return {
+    id: user._id,
+    email: user.email,
+    isEmailVerified: user.isEmailVerified,
+  };
+};
+
+
 // LoginUser Service
 export const loginUser = async ({ email, password }) => {
   if (!email || !password) {
@@ -76,7 +136,9 @@ export const loginUser = async ({ email, password }) => {
   const normalizedEmail = email.trim().toLowerCase();
 
   // Find user and explicitly include passwordHash
-  const user = await User.findOne({email: normalizedEmail}).select("+passwordHash");
+  const user = await User.findOne({ email: normalizedEmail }).select(
+    "+passwordHash",
+  );
 
   if (!user) {
     const error = new Error("Invalid email or password.");
@@ -93,16 +155,15 @@ export const loginUser = async ({ email, password }) => {
 
   // Account may exist through Google/GitHub without a password
   if (!user.passwordHash) {
-    const error = new Error("This account does not have a password. Please use your connected login provider.");
+    const error = new Error(
+      "This account does not have a password. Please use your connected login provider.",
+    );
     error.statusCode = 400;
     throw error;
   }
 
   // Compareing password
-  const isPasswordCorrect = await bcrypt.compare(
-    password,
-    user.passwordHash
-  );
+  const isPasswordCorrect = await bcrypt.compare(password, user.passwordHash);
 
   if (!isPasswordCorrect) {
     const error = new Error("Invalid email or password.");

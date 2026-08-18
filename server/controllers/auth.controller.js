@@ -1,4 +1,4 @@
-import { loginUser, registerUser } from "../services/auth.service.js";
+import { loginUser, registerUser, verifyEmailToken } from "../services/auth.service.js";
 import { generateAccessToken } from "../utils/jwt.js";
 
 export const register = async (req, res, next) => {
@@ -10,7 +10,24 @@ export const register = async (req, res, next) => {
 
     return res.status(201).json({
       success: true,
-      message: "User registered successfully.",
+      message: "Registration successful. Please check your email to verify your account.",
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const verifyEmail = async (req, res, next) => {
+  try {
+    const { token } = req.query;
+
+    const user = await verifyEmailToken(token);
+
+    return res.status(200).json({
+      success: true,
+      message: "Email verified successfully.",
       user,
     });
   } catch (error) {
@@ -89,6 +106,7 @@ export const logout = async (req, res, next) => {
     next(error);
   }
 };
+
 
 export const oauthCallback = async (req, res, next) => {
   try {

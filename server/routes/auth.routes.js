@@ -1,11 +1,12 @@
 import express from 'express';
-import { getMe, login, logout, oauthCallback, register } from '../controllers/auth.controller.js';
+import { getMe, login, logout, oauthCallback, register, verifyEmail } from '../controllers/auth.controller.js';
 import { isAuthenticated } from '../middleware/isAuthenticated.js';
 import passport from "passport";
 
 const router = express.Router();
 
 router.post("/register", register);
+router.get("/verify-email", verifyEmail);
 router.post("/login", login);
 router.get("/me", isAuthenticated, getMe);
 router.post("/logout", logout);
