@@ -1,6 +1,6 @@
-import { getMyProfileService, updateMyProfileService } from "../services/user.service.js";
+import { getMyProfileService, setOrChangePasswordService, updateMyProfileService } from "../services/user.service.js";
 
-
+// To get my Profile
 export const getMyProfile = async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -29,6 +29,25 @@ export const updateMyProfile = async (req, res, next) => {
       success: true,
       message: "Profile updated successfully.",
       user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+// Set ans Change Password
+export const setOrChangePassword = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const {currentPassword, newPassword, confirmPassword} = req.body;
+
+    const result = await setOrChangePasswordService(userId, { currentPassword, newPassword, confirmPassword });
+
+    return res.status(200).json({
+      success: true,
+      message: "Password updated successfully.",
+      result,
     });
   } catch (error) {
     next(error);
