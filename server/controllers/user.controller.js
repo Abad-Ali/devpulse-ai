@@ -1,4 +1,4 @@
-import { getMyProfileService, setOrChangePasswordService, updateMyProfileService } from "../services/user.service.js";
+import { deleteAccountService, getMyProfileService, setOrChangePasswordService, updateMyProfileService } from "../services/user.service.js";
 
 // To get my Profile
 export const getMyProfile = async (req, res, next) => {
@@ -48,6 +48,22 @@ export const setOrChangePassword = async (req, res, next) => {
       success: true,
       message: "Password updated successfully.",
       result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+// To delete account 
+export const deleteAccount = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const result = await deleteAccountService(userId);
+
+    return res.status(200).json({
+      success: true,
+      message: result.message,
     });
   } catch (error) {
     next(error);

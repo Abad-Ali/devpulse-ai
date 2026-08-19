@@ -177,3 +177,30 @@ export const setOrChangePasswordService = async (userId, {currentPassword, newPa
     message: hasPassword ? "Password changed successfully." : "Password set successfully.",
   };
 };  
+
+
+// Delete Account
+export const deleteAccountService = async (userId) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    const error = new Error("User not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  if (user.deletedAt) {
+    const error = new Error("Account is already deleted.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  user.isActive = false;
+  user.deletedAt = new Date();
+
+  await user.save();
+
+  return {
+    message: "Account deleted successfully.",
+  };
+};

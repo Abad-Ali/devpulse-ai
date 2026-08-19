@@ -68,6 +68,7 @@ const userSchema = new mongoose.Schema(
     passwordResetExpires: { type: Date, default: null },
     
     isActive: { type: Boolean, default: true },
+    deletedAt: { type: Date, default: null },
 
     // Preferences
     preferences: {

@@ -21,8 +21,8 @@ export const isAuthenticated = async (req, res, next) => {
       throw error;
     }
 
-    if (!user.isActive) {
-      const error = new Error("Account is inactive.");
+    if (!user.isActive || user.deletedAt) {
+      const error = new Error("Account is inactive or deleted.");
       error.statusCode = 403;
       throw error;
     }

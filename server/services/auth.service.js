@@ -169,6 +169,12 @@ export const requestPasswordReset = async (email) =>{
     return;
   }
 
+  if (!user.isActive || user.deletedAt) {
+    const error = new Error("This account is inactive or deleted.");
+    error.statusCode = 403;
+    throw error;
+  }
+
   // Generate a NEW token every time
   const {rawToken, hashedToken} = generateSecureToken();
 
@@ -216,6 +222,12 @@ export const resetPasswordService = async (token, newPassword) => {
     throw error;
   }
 
+  if (!user.isActive || user.deletedAt) {
+    const error = new Error("This account is inactive or deleted.");
+    error.statusCode = 403;
+    throw error;
+  }
+
   // Hash the new password
   const passwordHash = await bcrypt.hash(newPassword, 12);
 
@@ -256,9 +268,9 @@ export const loginUser = async ({ email, password }) => {
     throw error;
   }
 
-  // Check whether account is active
-  if (!user.isActive) {
-    const error = new Error("Your account is inactive.");
+  // Check whether account is active or not deleted account
+  if (!user.isActive || user.deletedAt) {
+    const error = new Error("This account is inactive or deleted.");
     error.statusCode = 403;
     throw error;
   }

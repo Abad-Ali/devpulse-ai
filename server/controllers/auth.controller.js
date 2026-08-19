@@ -168,6 +168,13 @@ export const oauthCallback = async (req, res, next) => {
       });
     }
 
+    if (!user.isActive || user.deletedAt) {
+      res.status(403).json({
+        success: false,
+        message: "This account is inactive or deleted."
+      })
+    }    
+
     const accessToken = generateAccessToken(user);
 
     res.cookie("accessToken", accessToken, {
