@@ -24,7 +24,7 @@ app.get("/api/v1/health", (req, res) => {
 
 // Routes
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/users", userRoutes);
 
 // Error handler
 app.use(errorMiddleware);
