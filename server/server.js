@@ -3,6 +3,7 @@ import express from "express";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from './routes/user.routes.js';
+import programRoutes from './routes/program.routes.js'
 import { errorMiddleware } from "./middleware/error.middleware.js";
 import cookieParser from "cookie-parser";
 import passport from "./config/passport.js";
@@ -25,6 +26,7 @@ app.get("/api/v1/health", (req, res) => {
 // Routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/programs", programRoutes);
 
 // Error handler
 app.use(errorMiddleware);

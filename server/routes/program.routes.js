@@ -1,0 +1,11 @@
+import express from 'express';
+import { isAuthenticated } from '../middleware/isAuthenticated.js';
+import { createProgram } from '../controllers/program.controller.js';
+import rateLimiter from '../middleware/rateLimiter.js';
+
+const router = express.Router();
+router.use(isAuthenticated);
+
+router.post("/create", rateLimiter({windowMs: 10* 60 * 1000, limit: 20}), createProgram);
+
+export default router;
