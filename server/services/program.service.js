@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Program from "../models/Program.js";
 
 
@@ -57,5 +58,45 @@ export const createProgramService = async (userId, {title, description, language
     lastRunAt: program.lastRunAt,
     createdAt: program.createdAt,
     updatedAt: program.updatedAt,
+  };
+};
+
+
+// GET MY PROGRAMS
+export const getMyProgramsService = async (userId) => {
+  if (!userId) {
+    const error = new Error("User ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    const error = new Error("Invalid user ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const programs = await Program.find({ userId }).sort({ updatedAt: -1 });
+
+  if (programs.length === 0) {
+    return {
+      programs: [],
+      message: "No programs found.",
+    };
+  }
+
+  return {
+    programs: programs.map((program) => ({
+      id: program._id,
+      userId: program.userId,
+      title: program.title,
+      description: program.description,
+      language: program.language,
+      code: program.code,
+      visibility: program.visibility,
+      lastRunAt: program.lastRunAt,
+      createdAt: program.createdAt,
+      updatedAt: program.updatedAt,
+    })),
+    message: "Programs retrieved successfully.",
   };
 };
