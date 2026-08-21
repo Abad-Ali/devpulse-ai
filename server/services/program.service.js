@@ -250,3 +250,68 @@ export const updateProgramService = async ( userId, programId, { title, descript
 
   return program.toObject();
 };
+
+
+// UPDATE PROGRAM CODE
+export const updateProgramCodeService = async (userId, programId, code) => {
+  if (!userId) {
+    const error = new Error("User ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!programId) {
+    const error = new Error("Program ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    const error = new Error("Invalid user ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(programId)) {
+    const error = new Error("Invalid program ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (code === undefined || code === null) {
+    const error = new Error("Program code is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (typeof code !== "string") {
+    const error = new Error("Program code must be a string.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (code.length > 100000) {
+    const error = new Error("Program code cannot exceed 100,000 characters.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const program = await Program.findOne({_id: programId, userId});
+  if (!program) {
+    const error = new Error("Program not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  program.code = code;
+
+  if (!program.isModified("code")) {
+    const error = new Error("No changes were made to the program code.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  await program.save();
+
+  return program.toObject();
+};
