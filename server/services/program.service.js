@@ -315,3 +315,44 @@ export const updateProgramCodeService = async (userId, programId, code) => {
 
   return program.toObject();
 };
+
+// DELETE PROGRAM
+export const deleteProgramService = async (userId, programId) => {
+  if (!userId) {
+    const error = new Error("User ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!programId) {
+    const error = new Error("Program ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    const error = new Error("Invalid user ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(programId)) {
+    const error = new Error("Invalid program ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const program = await Program.findOne({_id: programId, userId});
+
+  if (!program) {
+    const error = new Error("Program not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  await program.deleteOne();
+
+  return {
+    message: "Program deleted successfully.",
+  };
+};
