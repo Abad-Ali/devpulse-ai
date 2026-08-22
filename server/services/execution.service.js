@@ -97,3 +97,27 @@ export const getMyExecutionsService = async (userId) => {
 
   return executions;
 };
+
+export const getMyExecutionService = async (userId, executionId) => {
+  if (!executionId) {
+    const error = new Error("Execution ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(executionId)) {
+    const error = new Error("Invalid execution ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const execution = await Execution.findOne({ _id: executionId, userId }).populate("programId", "title language").select("-userId -__v").lean();
+
+  if (!execution) {
+    const error = new Error("Execution not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return execution;
+};
