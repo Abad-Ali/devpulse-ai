@@ -79,3 +79,21 @@ export const createExecutionService = async ({userId, programId, status, stdout,
 
   return execution;
 };
+
+export const getMyExecutionsService = async (userId) => {
+  if (!userId) {
+    const error = new Error("User ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    const error = new Error("Invalid user ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const executions = await Execution.find({ userId }).populate("programId", "title language").select("-userId -__v").sort({ createdAt: -1 }).lean();;
+
+  return executions;
+};

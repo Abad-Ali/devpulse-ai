@@ -1,4 +1,4 @@
-import { createExecutionService } from "../services/execution.service.js";
+import { createExecutionService, getMyExecutionsService } from "../services/execution.service.js";
 
 export const createExecution = async (req, res, next) => {
   try {
@@ -11,6 +11,22 @@ export const createExecution = async (req, res, next) => {
       success: true,
       message: "Execution recorded successfully.",
       data: execution,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const getMyExecutions = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const executions = await getMyExecutionsService(userId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Executions retrieved successfully.",
+      data: executions,
     });
   } catch (error) {
     next(error);
