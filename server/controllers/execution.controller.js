@@ -1,4 +1,4 @@
-import { createExecutionService, getMyExecutionService, getMyExecutionsService } from "../services/execution.service.js";
+import { createExecutionService, getMyExecutionService, getMyExecutionsService, getProgramExecutionsService } from "../services/execution.service.js";
 
 export const createExecution = async (req, res, next) => {
   try {
@@ -43,6 +43,23 @@ export const getMyExecution = async (req, res, next) => {
       success: true,
       message: "Execution retrieved successfully.",
       data: execution,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getProgramExecutions = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const programId = req.params.programId;
+
+    const executions = await getProgramExecutionsService( userId, programId );
+
+    return res.status(200).json({
+      success: true,
+      message: "Program executions retrieved successfully.",
+      data: executions,
     });
   } catch (error) {
     next(error);

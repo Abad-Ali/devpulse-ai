@@ -121,3 +121,28 @@ export const getMyExecutionService = async (userId, executionId) => {
 
   return execution;
 };
+
+export const getProgramExecutionsService = async (userId, programId) => {
+  if (!programId) {
+    const error = new Error("Program ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(programId)) {
+    const error = new Error("Invalid program ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const program = await Program.findOne({ _id: programId, userId}).select("_id").lean();
+  if (!program) {
+    const error = new Error("Program not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const executions = await Execution.find({ userId, programId }).populate("programId", "title language").select("-userId -__v").sort({ createdAt: -1 }).lean();
+
+  return executions;
+};
