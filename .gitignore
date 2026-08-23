@@ -142,3 +142,7 @@ lerna-debug.log*
 # server/uploads/
 # server/storage/
 # server/generated/
+
+# AI coding agent instructions
+**/AGENTS.md
+**/CLAUDE.md
