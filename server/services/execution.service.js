@@ -146,3 +146,38 @@ export const getProgramExecutionsService = async (userId, programId) => {
 
   return executions;
 };
+
+export const deleteMyExecutionService = async (userId, executionId) => {
+  if (!userId) {
+    const error = new Error("User ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    const error = new Error("Invalid user ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!executionId) {
+    const error = new Error("Execution ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(executionId)) {
+    const error = new Error("Invalid execution ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const execution = await Execution.findOneAndDelete({ _id: executionId, userId });
+  if (!execution) {
+    const error = new Error("Execution not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return execution.toObject();
+};

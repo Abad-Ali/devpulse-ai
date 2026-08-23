@@ -1,14 +1,14 @@
 import express from "express";
 import { isAuthenticated } from "../middleware/isAuthenticated.js";
 import rateLimiter from "../middleware/rateLimiter.js";
-import { createExecution, getMyExecution, getMyExecutions } from "../controllers/execution.controller.js";
+import { createExecution, deleteMyExecution, getMyExecution, getMyExecutions } from "../controllers/execution.controller.js";
 
 const router = express.Router();
-
 router.use(isAuthenticated);
 
 router.post("/", rateLimiter({windowMs: 10 * 60 * 1000, limit: 100}), createExecution);
 router.get("/", rateLimiter({windowMs: 10 * 60 * 1000, limit: 100}), getMyExecutions);
 router.get("/:executionId", rateLimiter({windowMs: 10 * 60 * 1000, limit: 100}), getMyExecution);
+router.delete("/:executionId", rateLimiter({windowMs: 10 * 60 * 1000, limit: 30}), deleteMyExecution);
 
 export default router;
