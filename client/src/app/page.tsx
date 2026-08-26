@@ -6,6 +6,10 @@ import { ArrowRight, Code2, LayoutDashboard, LogIn, UserPlus } from "lucide-reac
 import MountainBackground from "./components/background/MountainBackground";
 import Navbar from "./components/navigation/Navbar";
 import Footer from "./components/navigation/Footer";
+import Features from "./components/home/Features";
+import HowItWorks from "./components/home/HowItWorks";
+import About from "./components/home/About";
+import FinalCTA from "./components/home/FinalCTA";
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -77,7 +81,10 @@ export default function Home() {
           </p>
         </div>
       </section>
-      
+      <Features/>
+      <HowItWorks/>
+      <About/>
+      <FinalCTA/>
       <Footer/>
     </main>
   );
