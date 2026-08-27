@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from './routes/user.routes.js';
@@ -14,6 +15,12 @@ const app = express();
 
 //middlerwares
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+const corsOptions = {
+  origin: process.env.CLIENT_URL,
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(passport.initialize());
 
