@@ -187,19 +187,19 @@ export const oauthCallback = async (req, res, next) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    // return res.redirect(`${process.env.CLIENT_URL}/`);
+    return res.redirect(`${process.env.CLIENT_URL}/`);
 
-    return res.status(200).json({
-      success: true,
-      message: "OAuth authentication successful",
-      user: {
-        id: user._id,
-        name: user.name,
-        username: user.username,
-        email: user.email,
-        avatar: user.avatar,
-      },
-    });
+    // return res.status(200).json({
+    //   success: true,
+    //   message: "OAuth authentication successful",
+    //   user: {
+    //     id: user._id,
+    //     name: user.name,
+    //     username: user.username,
+    //     email: user.email,
+    //     avatar: user.avatar,
+    //   },
+    // });
   } catch (error) {
     next(error);
   }
