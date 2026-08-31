@@ -10,3 +10,17 @@ export const signup = async ( data: {
 
     return res.data;
 }
+
+export const oauthLogin = (provider: "google" | "github") => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  window.location.href = `${apiUrl}/auth/${provider}`;
+};
+
+export const login = async (data: {
+  email: string;
+  password: string;
+}) => {
+  const res = await api.post("/auth/login", data);
+
+  return res.data;
+};
