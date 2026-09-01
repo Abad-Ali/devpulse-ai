@@ -1,8 +1,6 @@
 "use client";
-
 import Image from "next/image";
-import { useState } from "react";
-import { ArrowRight, Code2, LayoutDashboard, LogIn, UserPlus } from "lucide-react";
+import { ArrowRight, Code2, LayoutDashboard, LoaderCircle, LogIn, UserPlus } from "lucide-react";
 import MountainBackground from "./components/background/MountainBackground";
 import Navbar from "./components/navigation/Navbar";
 import Footer from "./components/navigation/Footer";
@@ -10,9 +8,13 @@ import Features from "./components/home/Features";
 import HowItWorks from "./components/home/HowItWorks";
 import About from "./components/home/About";
 import FinalCTA from "./components/home/FinalCTA";
+import { useAppSelector } from "@/lib/redux/hooks";
+import Link from "next/link";
 
 export default function Home() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const { isAuthenticated, loading } = useAppSelector(
+    (state) => state.auth
+  );
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#2A2C32] text-white">
@@ -47,14 +49,18 @@ export default function Home() {
           </p>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            {isLoggedIn ? (
+            {loading ? (
+              <div className="flex h-12 items-center justify-center">
+                <LoaderCircle size={22} className="animate-spin text-[#FFAA00]"/>
+              </div>
+            ) : isAuthenticated ? (
               <>
                 <button type="button" className="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#FF2200] via-[#FF7700] to-[#FFDD00] px-7 py-3.5 font-bold text-[#2A2C32] transition duration-200 hover:brightness-110 sm:w-auto">
-                  <Code2 size={20} strokeWidth={2.5}/>
+                  <Code2 size={20} strokeWidth={2.5} />
                   <span>Start Coding</span>
                   <ArrowRight size={18} strokeWidth={2.5} className="transition-transform duration-200 group-hover:translate-x-0.5"/>
                 </button>
-
+          
                 <button type="button" className="group flex w-full items-center justify-center gap-2.5 rounded-xl border border-white/20 bg-[#2A2C32]/50 px-7 py-3.5 font-semibold text-white backdrop-blur-md transition duration-200 hover:border-[#FFAA00]/60 hover:bg-[#2A2C32]/70 sm:w-auto">
                   <LayoutDashboard size={19} className="text-[#FFAA00]"/>
                   <span>Go to Dashboard</span>
@@ -62,16 +68,16 @@ export default function Home() {
               </>
             ) : (
               <>
-                <button type="button" className="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#FF2200] via-[#FF7700] to-[#FFDD00] px-7 py-3.5 font-bold text-[#2A2C32] transition duration-200 hover:brightness-110 sm:w-auto">
-                  <UserPlus size={20} strokeWidth={2.5}/>
+                <Link href="/signup" className="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#FF2200] via-[#FF7700] to-[#FFDD00] px-7 py-3.5 font-bold text-[#2A2C32] transition duration-200 hover:brightness-110 sm:w-auto">
+                  <UserPlus size={20} strokeWidth={2.5} />
                   <span>Create Your Account</span>
                   <ArrowRight size={18} strokeWidth={2.5} className="transition-transform duration-200 group-hover:translate-x-0.5"/>
-                </button>
-
-                <button type="button" className="group flex w-full items-center justify-center gap-2.5 rounded-xl border border-white/20 bg-[#2A2C32]/50 px-7 py-3.5 font-semibold text-white backdrop-blur-md transition duration-200 hover:border-[#FFAA00]/60 hover:bg-[#2A2C32]/70 sm:w-auto">
+                </Link>
+          
+                <Link href="/login"className="group flex w-full items-center justify-center gap-2.5 rounded-xl border border-white/20 bg-[#2A2C32]/50 px-7 py-3.5 font-semibold text-white backdrop-blur-md transition duration-200 hover:border-[#FFAA00]/60 hover:bg-[#2A2C32]/70 sm:w-auto">
                   <LogIn size={19} className="text-[#FFAA00]"/>
                   <span>Login</span>
-                </button>
+                </Link>
               </>
             )}
           </div>
