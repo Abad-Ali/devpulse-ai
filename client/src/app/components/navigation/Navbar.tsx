@@ -1,12 +1,15 @@
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight,  ChevronDown, Code2, LayoutDashboard, LogIn, Menu, X } from "lucide-react";
+import { ArrowRight,  ChevronDown, Code2, LayoutDashboard, LoaderCircle, LogIn, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { useAppSelector } from "@/lib/redux/hooks";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isAuthenticated, loading, user } = useAppSelector(
+    (state) => state.auth
+  );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -47,15 +50,25 @@ export default function Navbar() {
         </div>
 
         <div className="hidden items-center gap-2 md:flex">
-          {isLoggedIn ? (
+          { loading ? (
+            <div className="flex items-center gap-2">
+              <LoaderCircle size={18} className="animate-spin text-[#FFAA00]"/>
+            </div>
+          ) : isAuthenticated  ? (
             <>
               <Link href="/dashboard" className="group flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#FFAA00]/30 hover:bg-white/[0.06] hover:text-white">
                 <LayoutDashboard size={17} className="text-[#FFAA00]"/>
                 <span>Dashboard</span>
               </Link>
 
-              <Link href="/profile" className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.08] bg-[#2A2C32] text-sm font-bold text-white transition hover:border-[#FFAA00]/40">
-                U
+              <Link href="/profile" className="rounded-xl transition hover:scale-105" >
+               <Avatar className="h-10 w-10 rounded-xl border border-white/[0.08] bg-[#2A2C32] transition hover:border-[#FFAA00]/40">
+                <AvatarImage src={user?.avatar || "/defaultPic.svg"} alt={user?.username || "Profile"} className="rounded-xl object-cover" />
+                 <AvatarFallback className="rounded-xl bg-gradient-to-br from-[#FF2200] via-[#FF7700] to-[#FFDD00] text-sm font-bold text-white">
+                   {/* {user?.name?.charAt(0)?.toUpperCase() || "U"}  */}
+                   U
+                 </AvatarFallback> 
+               </Avatar>
               </Link>
             </>
           ) : (
@@ -102,15 +115,25 @@ export default function Navbar() {
           <div className="mx-4 h-px bg-white/[0.07]" />
 
           <div className="p-4">
-            {isLoggedIn ? (
+            {loading ? (
+              <div className="flex justify-center items-center gap-2">
+                <LoaderCircle size={18} className="animate-spin text-[#FFAA00]"/>
+              </div>
+            ) : isAuthenticated ? (
               <div className="flex flex-col gap-2">
                 <Link href="/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-5 py-3 text-sm font-semibold text-white transition hover:border-[#FFAA00]/30">
                   <LayoutDashboard size={17} className="text-[#FFAA00]"/>
                   Go to Dashboard
                 </Link>
 
-                <Link href="/profile" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white/60 transition hover:bg-white/[0.05] hover:text-white">
-                  Profile
+                <Link href="/profile" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.03] px-5 py-2 text-sm font-semibold text-white/70 transition hover:bg-white/[0.05] hover:text-white">
+                  <Avatar className="h-8 w-8 rounded-xl border border-white/[0.08] bg-[#2A2C32] transition hover:border-[#FFAA00]/40">
+                    <AvatarImage src={user?.avatar || "/defaultPic.svg"} alt={user?.username || "Profile"} className="rounded-xl object-cover"/>
+                    <AvatarFallback className="rounded-xl bg-gradient-to-br from-[#FF2200] via-[#FF7700] to-[#FFDD00] text-sm font-bold text-white">
+                      {user?.username?.charAt(0)?.toUpperCase() || "U"} 
+                    </AvatarFallback>
+                  </Avatar>
+                  <span>Profile</span>
                 </Link>
               </div>
             ) : (
