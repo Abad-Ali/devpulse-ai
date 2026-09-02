@@ -55,28 +55,28 @@ export default function Home() {
               </div>
             ) : isAuthenticated ? (
               <>
-                <button type="button" className="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#FF2200] via-[#FF7700] to-[#FFDD00] px-7 py-3.5 font-bold text-[#2A2C32] transition duration-200 hover:brightness-110 sm:w-auto">
-                  <Code2 size={20} strokeWidth={2.5} />
+                <Link href='/programs/new' className="group flex w-full items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-[#FF2200] via-[#FF7700] to-[#FFDD00] px-7 py-3.5 text-sm font-black uppercase tracking-wider text-[#17191e] transition duration-200 hover:brightness-110 shadow-md shadow-[#FF7700]/10 sm:w-auto">
+                  <Code2 size={16} strokeWidth={2.5} />
                   <span>Start Coding</span>
-                  <ArrowRight size={18} strokeWidth={2.5} className="transition-transform duration-200 group-hover:translate-x-0.5"/>
-                </button>
-          
-                <button type="button" className="group flex w-full items-center justify-center gap-2.5 rounded-xl border border-white/20 bg-[#2A2C32]/50 px-7 py-3.5 font-semibold text-white backdrop-blur-md transition duration-200 hover:border-[#FFAA00]/60 hover:bg-[#2A2C32]/70 sm:w-auto">
-                  <LayoutDashboard size={19} className="text-[#FFAA00]"/>
+                  <ArrowRight size={16} strokeWidth={2.5} className="transition-transform duration-200 group-hover:translate-x-1"/>
+                </Link>              
+
+                <Link href='/dashboard' className="group flex w-full items-center justify-center gap-2.5 rounded-full border border-white/[0.08] bg-white/5 px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-md transition duration-200 hover:border-[#FFAA00]/50 hover:bg-white/10 shadow-sm sm:w-auto">
+                  <LayoutDashboard size={16} className="text-[#FFAA00] transition-transform duration-200 group-hover:scale-105"/>
                   <span>Go to Dashboard</span>
-                </button>
+                </Link>
               </>
             ) : (
               <>
-                <Link href="/signup" className="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#FF2200] via-[#FF7700] to-[#FFDD00] px-7 py-3.5 font-bold text-[#2A2C32] transition duration-200 hover:brightness-110 sm:w-auto">
-                  <UserPlus size={20} strokeWidth={2.5} />
+                <Link href="/signup" className="group flex w-full items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-[#FF2200] via-[#FF7700] to-[#FFDD00] px-7 py-3.5 text-sm font-black uppercase tracking-wider text-[#17191e] transition duration-200 hover:brightness-110 shadow-md shadow-[#FF7700]/10 sm:w-auto">
+                  <UserPlus size={16} strokeWidth={2.5} />
                   <span>Create Your Account</span>
-                  <ArrowRight size={18} strokeWidth={2.5} className="transition-transform duration-200 group-hover:translate-x-0.5"/>
+                  <ArrowRight size={16} strokeWidth={2.5} className="transition-transform duration-200 group-hover:translate-x-1"/>
                 </Link>
-          
-                <Link href="/login"className="group flex w-full items-center justify-center gap-2.5 rounded-xl border border-white/20 bg-[#2A2C32]/50 px-7 py-3.5 font-semibold text-white backdrop-blur-md transition duration-200 hover:border-[#FFAA00]/60 hover:bg-[#2A2C32]/70 sm:w-auto">
-                  <LogIn size={19} className="text-[#FFAA00]"/>
-                  <span>Login</span>
+              
+                <Link href="/login" className="group flex w-full items-center justify-center gap-2.5 rounded-full border border-white/[0.08] bg-white/5 px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-md transition duration-200 hover:border-[#FFAA00]/50 hover:bg-white/10 shadow-sm sm:w-auto">
+                  <LogIn size={16} className="text-[#FFAA00] transition-transform duration-200 group-hover:scale-105"/>
+                  <span>Login Now</span>
                 </Link>
               </>
             )}
