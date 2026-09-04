@@ -62,7 +62,7 @@ const DashboardGreeting = () => {
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link href="/programs/new" className="group inline-flex h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-[#FF2200] via-[#FF7700] to-[#FFDD00] px-5 text-sm font-semibold text-white shadow-[0_8px_30px_rgba(255,119,0,0.14)] transition duration-200 hover:brightness-110">
-              <Plus size={17} strokeWidth={2.5} />
+              <Plus size={17} strokeWidth={2.5} className="transition-transform duration-200 group-hover:rotate-90"/>
               New Program
               <ArrowRight size={16} strokeWidth={2.5} className="transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
