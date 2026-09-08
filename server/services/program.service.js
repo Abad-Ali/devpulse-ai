@@ -136,7 +136,22 @@ export const getMyProgramService = async (userId, programId) => {
     throw error;
   }
 
-  return program.toObject();
+  // return program.toObject();
+  return {
+    program: {
+      id: program._id,
+      userId: program.userId,
+      title: program.title,
+      description: program.description,
+      language: program.language,
+      code: program.code,
+      visibility: program.visibility,
+      lastRunAt: program.lastRunAt,
+      createdAt: program.createdAt,
+      updatedAt: program.updatedAt,
+    },
+    message: "Programs retrieved successfully.",
+  };
 };
 
 // UPDATE PROGRAM
@@ -248,7 +263,18 @@ export const updateProgramService = async ( userId, programId, { title, descript
 
   await program.save();
 
-  return program.toObject();
+  return {
+    id: program._id.toString(),
+    userId: program.userId.toString(),
+    title: program.title,
+    description: program.description,
+    language: program.language,
+    code: program.code,
+    visibility: program.visibility,
+    lastRunAt: program.lastRunAt,
+    createdAt: program.createdAt,
+    updatedAt: program.updatedAt,
+  };
 };
 
 
@@ -313,7 +339,22 @@ export const updateProgramCodeService = async (userId, programId, code) => {
 
   await program.save();
 
-  return program.toObject();
+  // return program.toObject();
+  return {
+    program: {
+      id: program._id,
+      userId: program.userId,
+      title: program.title,
+      description: program.description,
+      language: program.language,
+      code: program.code,
+      visibility: program.visibility,
+      lastRunAt: program.lastRunAt,
+      createdAt: program.createdAt,
+      updatedAt: program.updatedAt,
+    },
+    message: "Programs retrieved successfully.",
+  };
 };
 
 // DELETE PROGRAM
