@@ -8,6 +8,7 @@ import DeleteProgramDialog from "./DeleteProgramDialog";
 import type { Program } from "@/lib/api/program.api";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 
 const ProgramsCards = () => {
@@ -77,12 +78,12 @@ const ProgramsCards = () => {
                       </div>
                     </div>
 
-                    <Tooltip>
+                    <Link href={`/programs/${program.id}`}><Tooltip>
                       <TooltipTrigger render={<Button type="button" variant="ghost" size="icon" aria-label="Open Program" className="h-9 w-9 shrink-0 cursor-pointer text-black/30 hover:bg-[#FF7700]/10 hover:text-[#FF7700] dark:text-white/30 dark:hover:bg-[#FFAA00]/10 dark:hover:text-[#FFAA00]" />}>
                         <ExternalLink size={16} strokeWidth={1.8} />
                       </TooltipTrigger>
                       <TooltipContent>Open Program</TooltipContent>
-                    </Tooltip>
+                    </Tooltip></Link>
                   </div>
 
                   <p className="mt-6 min-h-[60px] text-sm leading-6 text-black/45 dark:text-white/35">{program.description || "No description provided."}</p>
@@ -95,7 +96,7 @@ const ProgramsCards = () => {
                   </div>
 
                   <div className="mt-5 flex items-center gap-2">
-                    <Button onClick={()=>router.push(`programs/editor/${program.id}`)} type="button" variant="ghost" className="h-10 flex-1 cursor-pointer rounded-xl border border-[#FF7700]/15 bg-[#FF7700]/[0.04] text-sm font-semibold text-[#D66A00] transition-all hover:border-[#FF7700]/30 hover:bg-[#FF7700]/10 hover:text-[#FF7700] dark:border-[#FFAA00]/10 dark:bg-[#FFAA00]/[0.04] dark:text-[#FFAA00]/70 dark:hover:border-[#FFAA00]/25 dark:hover:bg-[#FFAA00]/10 dark:hover:text-[#FFAA00]">
+                    <Button onClick={()=>router.push(`/programs/editor/${program.id}`)} type="button" variant="ghost" className="h-10 flex-1 cursor-pointer rounded-xl border border-[#FF7700]/15 bg-[#FF7700]/[0.04] text-sm font-semibold text-[#D66A00] transition-all hover:border-[#FF7700]/30 hover:bg-[#FF7700]/10 hover:text-[#FF7700] dark:border-[#FFAA00]/10 dark:bg-[#FFAA00]/[0.04] dark:text-[#FFAA00]/70 dark:hover:border-[#FFAA00]/25 dark:hover:bg-[#FFAA00]/10 dark:hover:text-[#FFAA00]">
                       <Play size={15} strokeWidth={2} />
                       Open in Editor
                     </Button>
