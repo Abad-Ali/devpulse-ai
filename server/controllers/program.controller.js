@@ -1,4 +1,4 @@
-import { createProgramService, deleteProgramService, getMyProgramsService, updateProgramCodeService, updateProgramService } from "../services/program.service.js";
+import { createProgramService, deleteProgramService, getMyProgramsService, getProgramByIdService, updateProgramCodeService, updateProgramService } from "../services/program.service.js";
 
 // CREATE PROGRAM
 export const createProgram = async (req, res, next) => {
@@ -84,6 +84,24 @@ export const deleteProgram = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: result.message,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET PROGRAM BY ID
+export const getProgramById = async (req, res, next) => {
+  try {
+    const { programId } = req.params;
+    const userId = req.user?._id ?? null;
+
+    const result = await getProgramByIdService(programId, userId);
+
+    return res.status(200).json({
+      success: true,
+      message: result.message,
+      data: result.program,
     });
   } catch (error) {
     next(error);
