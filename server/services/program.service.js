@@ -397,3 +397,50 @@ export const deleteProgramService = async (userId, programId) => {
     message: "Program deleted successfully.",
   };
 };
+
+// GET PROGRAM BY ID
+export const getProgramByIdService = async (programId, userId = null) => {
+  if (!programId) {
+    const error = new Error("Program ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(programId)) {
+    const error = new Error("Invalid program ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const program = await Program.findById(programId);
+
+  if (!program) {
+    const error = new Error("Program not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const isOwner = userId && program.userId.toString() === userId.toString();
+
+  if (program.visibility !== "public" && !isOwner) {
+    const error = new Error("You do not have permission to view this program.");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  return {
+    program: {
+      id: program._id,
+      userId: program.userId,
+      title: program.title,
+      description: program.description,
+      language: program.language,
+      code: program.code,
+      visibility: program.visibility,
+      lastRunAt: program.lastRunAt,
+      createdAt: program.createdAt,
+      updatedAt: program.updatedAt,
+    },
+    message: "Program retrieved successfully.",
+  };
+};
