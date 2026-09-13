@@ -1,6 +1,6 @@
 import express from 'express';
 import { isAuthenticated } from '../middleware/isAuthenticated.js';
-import { createProgram, deleteProgram, getMyPrograms, updateProgram, updateProgramCode } from '../controllers/program.controller.js';
+import { createProgram, deleteProgram, getMyPrograms, getProgramById, updateProgram, updateProgramCode } from '../controllers/program.controller.js';
 import rateLimiter from '../middleware/rateLimiter.js';
 import { getMyProgram } from '../controllers/user.controller.js';
 import { getProgramExecutions } from '../controllers/execution.controller.js';
@@ -16,5 +16,7 @@ router.patch("/:programId/code", rateLimiter({windowMs: 10 * 60 * 1000, limit: 3
 router.delete("/:programId", rateLimiter({windowMs: 10 * 60 * 1000, limit: 20}), deleteProgram);
 
 router.get("/:programId/executions", rateLimiter({windowMs: 10 * 60 * 1000, limit: 100}), getProgramExecutions);
+
+router.get("/view/:programId", rateLimiter({windowMs: 10 * 60 * 1000, limit: 100}), getProgramById);
 
 export default router;
