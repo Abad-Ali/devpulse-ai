@@ -48,3 +48,8 @@ export const updateProgramCode = async ( programId: string, code : string) => {
   const res = await api.patch(`/programs/${programId}/code`, {code});
   return res.data;
 };
+
+export const getProgramById = async (programId: string) => {
+  const res = await api.get(`/programs/view/${programId}`);
+  return res.data;
+};
