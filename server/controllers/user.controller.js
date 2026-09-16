@@ -1,5 +1,5 @@
 import { getMyProgramService } from "../services/program.service.js";
-import { deleteAccountService, getMyProfileService, setOrChangePasswordService, updateMyProfileService } from "../services/user.service.js";
+import { deleteAccountService, getMyProfileService, getProfileService, setOrChangePasswordService, updateMyProfileService } from "../services/user.service.js";
 
 // To get my Profile
 export const getMyProfile = async (req, res, next) => {
@@ -83,6 +83,22 @@ export const getMyProgram = async (req, res, next) => {
       success: true,
       message: "Program retrieved successfully.",
       data: program,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// To get a user's profile
+export const getProfile = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+
+    const user = await getProfileService(username);
+
+    return res.status(200).json({
+      success: true,
+      user,
     });
   } catch (error) {
     next(error);
