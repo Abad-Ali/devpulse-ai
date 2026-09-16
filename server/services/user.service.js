@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
+import Program from "../models/Program.js";
 
 // GET MY PROFILE
 export const getMyProfileService = async (userId) => {
@@ -202,5 +203,36 @@ export const deleteAccountService = async (userId) => {
 
   return {
     message: "Account deleted successfully.",
+  };
+};
+
+
+// GET ANY PROFILE
+export const getProfileService = async (username) => {
+  if (!username) {
+    const error = new Error("Username is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const user = await User.findOne({ username }).select("name username bio avatar stats createdAt");
+
+  if (!user) {
+    const error = new Error("User not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const programs = await Program.find({userId: user._id, visibility: "public"}).sort({ createdAt: -1 }).limit(10).select("title description language code visibility lastRunAt createdAt updatedAt");
+
+  return {
+    id: user._id,
+    name: user.name,
+    username: user.username,
+    bio: user.bio,
+    avatar: user.avatar,
+    stats: user.stats,
+    createdAt: user.createdAt,
+    programs,
   };
 };
