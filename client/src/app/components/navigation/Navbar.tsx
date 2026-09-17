@@ -61,7 +61,7 @@ export default function Navbar() {
                 <span>Dashboard</span>
               </Link>
 
-              <Link href="/profile" className="relative block transition-transform duration-200 hover:scale-105">
+              <Link href="/user" className="relative block transition-transform duration-200 hover:scale-105">
                 <Avatar className="h-10 w-10 rounded-full border border-white/[0.12] bg-[#1C1E22] transition-colors hover:border-[#FF7700]/50">
                   <AvatarImage src={user?.avatar || "/defaultPic.svg"} alt={user?.username || "Profile"} className="rounded-full object-cover" />
                   <AvatarFallback className="rounded-full bg-gradient-to-br from-[#FF2200] via-[#FF7700] to-[#FFDD00] text-sm font-black text-white">
