@@ -50,7 +50,7 @@ const AppSidebar = () => {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton tooltip="DevPulse AI" className="h-12 rounded-xl text-slate-900 dark:text-white hover:bg-slate-200/50 dark:hover:bg-white/[0.05] group-data-[collapsible=icon]:!size-12">
-                <Link href="/dashboard" onClick={closeMobile} className="flex w-full items-center gap-3">
+                <Link href="/" onClick={closeMobile} className="flex w-full items-center gap-3">
                   <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 dark:border-white/10 bg-[#2A2C32]">
                     <Image src="/assets/logo.png" alt="DevPulse AI" width={28} height={28} priority className="size-7 shrink-0 object-contain" />
                   </div>
@@ -194,7 +194,7 @@ const AppSidebar = () => {
 
             <SidebarMenuItem>
               <SidebarMenuButton tooltip="Profile" className={`h-10 rounded-xl text-slate-800 dark:text-white hover:bg-slate-200/60 dark:hover:bg-white/[0.05] ${collapsed ? "size-12 justify-center p-0" : "w-full"}`}>
-                <Link href="/profile" onClick={closeMobile} className="flex w-full items-center gap-3">
+                <Link href={`/user`} onClick={closeMobile} className="flex w-full items-center gap-3">
                   <Avatar className="size-8 shrink-0 overflow-hidden rounded-full border border-slate-200 dark:border-white/[0.08] group-data-[collapsible=icon]:size-[18px]">
                     <AvatarImage src={user?.avatar || "/defaultPic.svg"} alt={user?.username || "Profile"} className="size-full object-cover" />
                     <AvatarFallback className="size-full rounded-lg bg-gradient-to-br from-[#FF2200] via-[#FF7700] to-[#FFDD00] text-xs font-bold text-white">
