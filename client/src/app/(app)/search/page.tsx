@@ -1,5 +1,4 @@
 import SearchHeader from '@/app/components/search/SearchHeader';
-import React from 'react'
 
 const SearchPage = () => {
   return (
