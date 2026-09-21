@@ -7,6 +7,7 @@ import userRoutes from './routes/user.routes.js';
 import programRoutes from './routes/program.routes.js';
 import executionRoutes from './routes/execution.routes.js';
 import dashboardRoutes from "./routes/dashboard.routes.js";
+import searchRoutes from "./routes/search.routes.js"
 import { errorMiddleware } from "./middleware/error.middleware.js";
 import cookieParser from "cookie-parser";
 import passport from "./config/passport.js";
@@ -38,6 +39,7 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/programs", programRoutes);
 app.use("/api/v1/executions", executionRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
+app.use("/api/v1/search", searchRoutes);
 
 // Error handler
 app.use(errorMiddleware);
