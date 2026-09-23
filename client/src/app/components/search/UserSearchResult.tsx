@@ -1,74 +1,71 @@
 "use client";
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { ArrowUpRight, CalendarDays, FileText, UserRound } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { searchUsers } from "@/lib/api/search.api";
+import SearchLoadingState from "./SearchLoadingState";
+import SearchNoResults from "./SearchNoResults";
+import axios from "axios";
+import { toast } from "sonner";
 
-import {
-  ArrowUpRight,
-  CalendarDays,
-  FileText,
-  UserRound,
-} from "lucide-react";
+interface UserSearchResultProps {
+  searchValue: string;
+}
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
+interface User {
+  _id: string;
+  name: string;
+  username: string;
+  bio: string;
+  avatar: string;
+  createdAt: string;
+}
 
-const UserSearchResult = () => {
-  
-  const users = [
-    {
-      id: "6a85bf0de114d83998d63481",
-      name: "Abad Ali",
-      username: "abadali",
-      bio: "gffdgfgfdg dfg fdg fdg fdgdd dghdf dr gdgb fdg fghgf fdgdgfdfdfdfdf dfd fdfd df dfdfdfdfdf",
-      avatar:
-        "https://avatars.githubusercontent.com/u/223816766?v=4",
-      createdAt: "2026-09-01T10:30:00.000Z",
-    },
-    {
-      id: "7b96cg1ef225e94009e74592",
-      name: "Ayan Khan",
-      username: "ayankhan",
-      bio: "Full-stack developer building web applications and developer tools.",
-      avatar: "/defaultPic.svg",
-      createdAt: "2026-08-18T10:30:00.000Z",
-    },
-    {
-      id: "8c07dh2fg336f05110f85603",
-      name: "Rahul Kumar",
-      username: "rahuldev",
-      bio: "Developer interested in systems programming, C++, and modern web technologies.",
-      avatar: "/defaultPic.svg",
-      createdAt: "2026-07-24T10:30:00.000Z",
-    },
-    {
-      id: "9d18ei3gh447g16221g96714",
-      name: "Arjun Verma",
-      username: "arjunverma",
-      bio: "Software developer working on open-source projects and developer experiences.",
-      avatar: "/defaultPic.svg",
-      createdAt: "2026-06-14T10:30:00.000Z",
-    },
-    {
-      id: "0e29fj4hi558h27332h07825",
-      name: "Neha Singh",
-      username: "nehasingh",
-      bio: "Frontend developer focused on React, TypeScript, and accessible interfaces.",
-      avatar: "/defaultPic.svg",
-      createdAt: "2026-05-29T10:30:00.000Z",
-    },
-    {
-      id: "1f30gk5ij669i38443i18936",
-      name: "Rohit Sharma",
-      username: "rohitdev",
-      bio: "Backend developer building APIs, services, and developer-focused applications.",
-      avatar: "/defaultPic.svg",
-      createdAt: "2026-05-11T10:30:00.000Z",
-    },
-  ];
+const UserSearchResult = ({ searchValue }: UserSearchResultProps) => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const trimmedSearchValue = searchValue.trim();
+
+    if (!trimmedSearchValue) {
+      setUsers([]);
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      try {
+        setIsLoading(true);
+
+        const response = await searchUsers(trimmedSearchValue);
+
+        setUsers(response.data || []);
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          const message = error.response?.data?.message || "Failed to search users.";
+          toast.error(message);
+        } else {
+          toast.error("Something went wrong. Please try again.");
+        }
+        setUsers([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 400);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [searchValue]);
+
+  if (isLoading) {
+    return <SearchLoadingState searchType="username"/>;
+  }
+
+  if (!users.length) {
+    return <SearchNoResults searchType="username"/>;
+  }
 
   return (
     <section className="w-full text-black dark:text-white">
@@ -106,7 +103,7 @@ const UserSearchResult = () => {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {users.map((user) => (
-            <Link key={user.id} href={`/user/${user.username}`} className="group relative overflow-hidden rounded-[28px] border border-black/[0.08] bg-white/[0.02] transition-all duration-300 hover:border-black/[0.16] hover:bg-black/[0.015] dark:border-white/[0.08] dark:bg-white/[0.015] dark:hover:border-white/[0.15] dark:hover:bg-white/[0.025]">
+            <Link key={user._id} href={`/user/${user.username}`} className="group relative overflow-hidden rounded-[28px] border border-black/[0.08] bg-white/[0.02] transition-all duration-300 hover:border-black/[0.16] hover:bg-black/[0.015] dark:border-white/[0.08] dark:bg-white/[0.015] dark:hover:border-white/[0.15] dark:hover:bg-white/[0.025]">
               <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-black/[0.02] opacity-0 transition duration-300 group-hover:opacity-100 dark:bg-white/[0.025]" />
 
               <div className="relative p-5">
