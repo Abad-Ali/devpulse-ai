@@ -1,14 +1,8 @@
 import api from "./axios";
 
-export const signup = async ( data: {
-    name: string;
-    username: string;
-    email: string;
-    password: string;
-}) => {
-    const res = await api.post("/auth/register", data);
-
-    return res.data;
+export const signup = async ( data: { name: string; username: string; email: string; password: string; }) => {
+  const res = await api.post("/auth/register", data);
+  return res.data;
 }
 
 export const oauthLogin = (provider: "google" | "github") => {
@@ -16,11 +10,12 @@ export const oauthLogin = (provider: "google" | "github") => {
   window.location.href = `${apiUrl}/auth/${provider}`;
 };
 
-export const login = async (data: {
-  email: string;
-  password: string;
-}) => {
+export const login = async (data: { email: string; password: string; }) => {
   const res = await api.post("/auth/login", data);
-
   return res.data;
 };
+
+export const signout = async () => {
+  const res = await api.post("/auth/logout");
+  return res.data
+}
