@@ -167,4 +167,39 @@ passport.use(
   )
 );
 
+// GITHUB OAUTH - GITHUB INTEGRATION
+passport.use(
+  "github-integration",
+  new GitHubStrategy(
+    {
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      callbackURL: process.env.GITHUB_INTEGRATION_CALLBACK_URL,
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        const githubId = profile.id;
+
+        const githubUsername =
+          profile.username ||
+          profile.displayName ||
+          `github_${githubId}`;
+
+        const githubAvatar =
+          profile.photos?.[0]?.value || "";
+
+        return done(null, {
+          githubId,
+          githubUsername,
+          githubAvatar,
+          accessToken,
+          refreshToken,
+        });
+      } catch (error) {
+        return done(error);
+      }
+    },
+  ),
+);
+
 export default passport;
