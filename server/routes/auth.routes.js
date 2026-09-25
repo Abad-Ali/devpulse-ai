@@ -11,7 +11,7 @@ router.get("/verify-email", rateLimiter({windowMs: 10* 60 * 1000, limit: 10}), v
 router.post("/resend-verification", rateLimiter({windowMs: 10* 60 * 1000, limit: 3}), resendVerification);
 router.post("/login", rateLimiter({windowMs: 10* 60 * 1000, limit: 10}), login);
 router.get("/me", rateLimiter({windowMs: 10* 60 * 1000, limit: 100}), isAuthenticated, getMe);
-router.post("/logout", rateLimiter({windowMs: 10* 60 * 1000, limit: 20}), logout);
+router.post("/logout", rateLimiter({windowMs: 10* 60 * 1000, limit: 20}),isAuthenticated, logout);
 
 router.get(
   "/google",
