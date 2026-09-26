@@ -1,5 +1,6 @@
 import express from "express";
 import { isAuthenticated } from "../middleware/isAuthenticated.js";
+import { githubCallback } from "../controllers/github.controller.js";
 
 
 const router = express.Router();
@@ -18,5 +19,7 @@ router.get("/connect", isAuthenticated,
   }
 );
 
+// GitHub OAuth callback
+router.get("/connect/callback", isAuthenticated, githubCallback);
 
 export default router;
