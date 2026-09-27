@@ -86,3 +86,26 @@ export const connectGitHubService = async ({ userId, code }) => {
 
   return connection;
 };
+
+// Get GitHub Status Service
+export const getGitHubStatusService = async ( userId ) => {
+  if (!userId) {
+    const error = new Error("User ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const connection = await GitHubConnection.findOne({ userId });
+
+  if (!connection) {
+    return null;
+  }
+
+  return {
+    githubUserId: connection.githubUserId,
+    githubUsername: connection.githubUsername,
+    githubAvatar: connection.githubAvatar,
+    isConnected: connection.isConnected,
+    connectedAt: connection.connectedAt,
+  };
+};
