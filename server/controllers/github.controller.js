@@ -42,3 +42,19 @@ export const getGitHubStatus = async (req, res, next) => {
     next(error);
   }
 };
+
+// DeActivate GitHub
+export const deactivateGitHub = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+
+    await deactivateGitHubService(userId);
+
+    return res.status(200).json({
+      success: true,
+      message: "GitHub integration deactivated successfully."
+    });
+  } catch (error) {
+    next(error);
+  }
+};
