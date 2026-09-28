@@ -109,3 +109,30 @@ export const getGitHubStatusService = async ( userId ) => {
     connectedAt: connection.connectedAt,
   };
 };
+
+// Deactivate GitHub Service
+export const deactivateGitHubService = async ( userId ) => {
+  if (!userId) {
+    const error = new Error("User ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const connection = await GitHubConnection.findOneAndUpdate(
+      { userId },
+      {
+        isConnected: false,
+      },
+      {
+        new: true,
+      },
+    );
+
+  if (!connection) {
+    const error = new Error("GitHub account is not connected.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return connection;
+};
