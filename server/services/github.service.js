@@ -136,3 +136,66 @@ export const deactivateGitHubService = async ( userId ) => {
 
   return connection;
 };
+
+// Refresh GitHub Access Token Service
+export const refreshGitHubTokenService = async ( connection ) => {
+  if (!connection) {
+    const error = new Error("GitHub connection is required.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  if (!connection.refreshToken || !connection.refreshTokenExpiresAt) {
+    const error = new Error("GitHub refresh token is unavailable.");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  if (new Date() >= new Date(connection.refreshTokenExpiresAt)) {
+    const error = new Error("GitHub refresh token has expired. Please reconnect your GitHub account.");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  // Request new tokens from GitHub
+  const tokenResponse = await axios.post("https://github.com/login/oauth/access_token", {
+      client_id: process.env.GITHUB_CLIENT_ID,
+      client_secret:
+        process.env.GITHUB_CLIENT_SECRET,
+      grant_type: "refresh_token",
+      refresh_token: connection.refreshToken,
+    },
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    },
+  );
+
+  const tokenData = tokenResponse.data;
+
+  if (tokenData.error || !tokenData.access_token) {
+    const error = new Error(tokenData.error_description ||"Failed to refresh GitHub access token.");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  if (!tokenData.expires_in || !tokenData.refresh_token || !tokenData.refresh_token_expires_in) {
+    const error = new Error("GitHub did not return a complete refreshed token.");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  // Update access token
+  connection.accessToken = tokenData.access_token;
+  connection.accessTokenExpiresAt = new Date(Date.now() + tokenData.expires_in * 1000);
+
+  // GitHub rotates the refresh token
+  connection.refreshToken = tokenData.refresh_token;
+  connection.refreshTokenExpiresAt = new Date(Date.now() + tokenData.refresh_token_expires_in * 1000);
+
+  await connection.save();
+
+  return connection;
+};
