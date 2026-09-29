@@ -49,7 +49,7 @@ const EmailSignIn = ({ onBack }: EmailSigninProps) => {
         toast.success(data.message || "Welcome back! You’ve logged in successfully.");
         dispatch(setUser(data.user));
         router.replace('/');
-        console.log("Login response:", data);
+        // console.log("Login response:", data);
         setFormData({
           email: "",
           password: "",

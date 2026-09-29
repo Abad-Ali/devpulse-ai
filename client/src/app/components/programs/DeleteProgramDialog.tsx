@@ -63,7 +63,7 @@ const DeleteProgramDialog = ({ program, open, onOpenChange }: DeleteProgramDialo
 
       toast.error(res.message || "Failed to delete program.");
     } catch (error) {
-      console.error("Failed to delete program:", error);
+      // console.error("Failed to delete program:", error);
 
       if (axios.isAxiosError(error)) {
         const message = error.response?.data?.message || "Failed to delete program.";
