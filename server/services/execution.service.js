@@ -93,7 +93,7 @@ export const getMyExecutionsService = async (userId) => {
     throw error;
   }
 
-  const executions = await Execution.find({ userId }).populate("programId", "title language").select("-userId -__v").sort({ createdAt: -1 }).lean();;
+  const executions = await Execution.find({ userId }).populate("programId", "title language").select("_id programId status executionTime environment exitCode startedAt finishedAt createdAt").sort({ createdAt: -1 }).lean();;
 
   return executions;
 };
