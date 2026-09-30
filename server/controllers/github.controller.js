@@ -1,4 +1,4 @@
-import { connectGitHubService, getGitHubStatusService, deactivateGitHubService } from "../services/github.service.js";
+import { connectGitHubService, getGitHubStatusService, deactivateGitHubService, reconnectGitHubService } from "../services/github.service.js";
 
 // GitHub Callback
 export const githubCallback = async (req, res, next) => {
@@ -53,6 +53,29 @@ export const deactivateGitHub = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: "GitHub integration deactivated successfully."
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Reconnect GitHub
+export const reconnectGitHub = async ( req, res, next ) => {
+  try {
+    const userId = req.user.id;
+
+    const connection = await reconnectGitHubService(userId);
+
+    return res.status(200).json({
+      success: true,
+      message: "GitHub account reconnected successfully.",
+      data: {
+        githubUserId: connection.githubUserId,
+        githubUsername: connection.githubUsername,
+        githubAvatar: connection.githubAvatar,
+        isConnected: connection.isConnected,
+        connectedAt: connection.connectedAt,
+      },
     });
   } catch (error) {
     next(error);
