@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticated } from "../middleware/isAuthenticated.js";
-import { deactivateGitHub,  getGitHubStatus, githubCallback } from "../controllers/github.controller.js";
+import { deactivateGitHub,  getGitHubStatus, githubCallback, reconnectGitHub } from "../controllers/github.controller.js";
 
 
 const router = express.Router();
@@ -22,5 +22,6 @@ router.get("/connect", isAuthenticated,
 router.get("/connect/callback", isAuthenticated, githubCallback);
 router.get("/status", isAuthenticated, getGitHubStatus);
 router.patch("/deactivate", isAuthenticated, deactivateGitHub);
+router.post( "/reconnect", isAuthenticated, reconnectGitHub);
 
 export default router;
