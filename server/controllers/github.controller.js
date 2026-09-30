@@ -48,11 +48,18 @@ export const deactivateGitHub = async (req, res, next) => {
   try {
     const userId = req.user.id;
 
-    await deactivateGitHubService(userId);
+    const connection = await deactivateGitHubService(userId);
 
     return res.status(200).json({
       success: true,
-      message: "GitHub integration deactivated successfully."
+      message: "GitHub integration deactivated successfully.",
+      data: {
+        githubUserId: connection.githubUserId,
+        githubUsername: connection.githubUsername,
+        githubAvatar: connection.githubAvatar,
+        isConnected: connection.isConnected,
+        connectedAt: connection.connectedAt,
+      }
     });
   } catch (error) {
     next(error);
@@ -68,14 +75,14 @@ export const reconnectGitHub = async ( req, res, next ) => {
 
     return res.status(200).json({
       success: true,
-      message: "GitHub account reconnected successfully.",
+      message: "GitHub account integrated successfully.",
       data: {
         githubUserId: connection.githubUserId,
         githubUsername: connection.githubUsername,
         githubAvatar: connection.githubAvatar,
         isConnected: connection.isConnected,
         connectedAt: connection.connectedAt,
-      },
+      }
     });
   } catch (error) {
     next(error);
