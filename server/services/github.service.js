@@ -199,3 +199,33 @@ export const refreshGitHubTokenService = async ( connection ) => {
 
   return connection;
 };
+
+// Reconnect GitHub Service
+export const reconnectGitHubService = async (userId) => {
+  if (!userId) {
+    const error = new Error("User ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const connection = await GitHubConnection.findOne({ userId }).select("+accessToken +refreshToken");
+  if (!connection) {
+    const error = new Error("GitHub account has not been connected before.");
+    error.statusCode = 404;
+    throw error;
+  }
+  if (connection.isConnected) {
+    const error = new Error("GitHub account is already connected.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Refresh the GitHub token pair
+  await refreshGitHubTokenService(connection);
+
+  connection.isConnected = true;
+
+  await connection.save();
+
+  return connection;
+};
