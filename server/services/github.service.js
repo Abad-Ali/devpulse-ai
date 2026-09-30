@@ -111,28 +111,28 @@ export const getGitHubStatusService = async ( userId ) => {
 };
 
 // Deactivate GitHub Service
-export const deactivateGitHubService = async ( userId ) => {
+export const deactivateGitHubService = async (userId) => {
   if (!userId) {
     const error = new Error("User ID is required.");
     error.statusCode = 400;
     throw error;
   }
 
-  const connection = await GitHubConnection.findOneAndUpdate(
-      { userId },
-      {
-        isConnected: false,
-      },
-      {
-        new: true,
-      },
-    );
-
+  const connection = await GitHubConnection.findOne({ userId });
   if (!connection) {
-    const error = new Error("GitHub account is not connected.");
+    const error = new Error("GitHub account has not been connected before.");
     error.statusCode = 404;
     throw error;
   }
+  if (!connection.isConnected) {
+    const error = new Error("GitHub account is already deactivated.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  connection.isConnected = false;
+
+  await connection.save();
 
   return connection;
 };
