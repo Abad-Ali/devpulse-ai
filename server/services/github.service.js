@@ -229,3 +229,42 @@ export const reconnectGitHubService = async (userId) => {
 
   return connection;
 };
+
+// Get GitHub Access Token Service
+export const getGitHubAccessTokenService = async ( userId ) => {
+  if (!userId) {
+    const error = new Error("User ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const connection = await GitHubConnection.findOne({ userId }).select("+accessToken +refreshToken");
+  if (!connection) {
+    const error = new Error("GitHub account has not been connected.");
+    error.statusCode = 404;
+    throw error;
+  }
+  if (!connection.isConnected) {
+    const error = new Error("GitHub account is deactivated.");
+    error.statusCode = 403;
+    throw error;
+  }
+  if (!connection.accessToken) {
+    const error = new Error("GitHub access token is unavailable.");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const accessTokenExpiresAt = new Date(connection.accessTokenExpiresAt).getTime();
+
+  // Refresh the access token 5 minutes before it expires.
+  const refreshBuffer = 5 * 60 * 1000;
+
+  const accessTokenExpired = Date.now() >= accessTokenExpiresAt - refreshBuffer;
+  if (accessTokenExpired) {
+    const refreshedConnection = await refreshGitHubTokenService(connection);
+    return refreshedConnection.accessToken;
+  }
+
+  return connection.accessToken;
+};
