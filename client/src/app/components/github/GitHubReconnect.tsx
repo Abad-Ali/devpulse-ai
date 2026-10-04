@@ -46,7 +46,7 @@ const GitHubReconnect = () => {
     <div className="mx-auto w-full max-w-2xl">
       <div className="group flex items-center justify-center">
         <div className="flex items-center gap-5">
-          <div className="flex size-16 items-center justify-center group-hover:scale-110 duration-300">
+          <div className="flex size-16 items-center justify-center scale-150 group-hover:scale-125 duration-300">
             <Image src="/assets/github.svg" alt="GitHub" width={48} height={48} className="invert dark:invert-0" priority/>
           </div>
 
@@ -56,7 +56,7 @@ const GitHubReconnect = () => {
             <span className="h-px w-8 bg-border" />
           </div>
 
-          <div className="flex size-16 items-center justify-center group-hover:scale-110 duration-300">
+          <div className="flex size-16 items-center justify-center scale-150 group-hover:scale-125 duration-300">
             <Image src="/assets/logo.png" alt="DevPulse AI" width={50} height={50} className="size-13 object-contain bg-black p-1.5 rounded-2xl border" priority/>
           </div>
         </div>
