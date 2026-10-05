@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { getGitHubStatus } from "@/lib/api/github.api";
 import GitHubConnect from "./GitHubConnectCard";
 import GitHubReconnect from "./GitHubReconnect";
-
+import GitHubConnected from "./connected/GitHubConnected";
 
 interface GitHubConnection {
   githubUserId: string;
@@ -24,7 +24,6 @@ interface GitHubStatusResponse {
 
 const GitHubIntegration = () => {
   const [status, setStatus] = useState<GitHubStatusResponse | null>(null);
-
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchGitHubStatus = async () => {
@@ -36,7 +35,7 @@ const GitHubIntegration = () => {
         setStatus(res);
         return;
       }
-      toast.error(res.message ||"Failed to fetch GitHub integration status.");
+      toast.error(res.message || "Failed to fetch GitHub integration status.");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const message = error.response?.data?.message || "Failed to fetch GitHub integration status.";
@@ -73,6 +72,10 @@ const GitHubIntegration = () => {
   if (!status.data.isConnected) {
     return <GitHubReconnect />;
   }
+
+  return (
+    <GitHubConnected connection={status.data}/>
+  );
 };
 
 export default GitHubIntegration;
