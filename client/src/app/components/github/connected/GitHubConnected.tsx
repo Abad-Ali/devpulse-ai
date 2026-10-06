@@ -1,4 +1,5 @@
 "use client";
+import GitHubConnectedHeader from "./GitHubConnectedHeader";
 
 interface GitHubConnection {
   githubUserId: string;
@@ -14,8 +15,8 @@ interface GitHubConnectedProps {
 
 const GitHubConnected = ({ connection }: GitHubConnectedProps) => {
   return (
-    <div className="mx-auto w-full max-w-3xl">
-      Connected GitHub UI
+    <div className="mx-auto w-full max-w-6xl">
+      <GitHubConnectedHeader/>
     </div>
   );
 };
