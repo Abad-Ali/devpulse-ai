@@ -9,6 +9,11 @@ export const getGitHubStatus = async () => {
   return resp.data;
 };
 
+export const deactivateGitHub = async () => {
+  const resp = await api.patch("/github/deactivate");
+  return resp.data;
+};
+
 export const reconnectGitHub = async () => {
   const resp = await api.post("/github/reconnect");
   return resp.data;
