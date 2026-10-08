@@ -1,5 +1,6 @@
 "use client";
 import GitHubConnectedHeader from "./GitHubConnectedHeader";
+import GitHubDeactivation from "./GitHubDeactivation";
 import GitHubProfile from "./GitHubProfile";
 
 interface GitHubConnection {
@@ -22,6 +23,10 @@ const GitHubConnected = ({ connection }: GitHubConnectedProps) => {
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
         <div className="min-w-0 flex-1">
           <GitHubProfile connection={connection} />
+        </div>
+
+        <div className="w-full lg:max-w-sm">
+          <GitHubDeactivation />
         </div>
       </div>
     </div>
