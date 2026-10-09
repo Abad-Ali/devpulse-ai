@@ -2,6 +2,7 @@
 import GitHubConnectedHeader from "./GitHubConnectedHeader";
 import GitHubDeactivation from "./GitHubDeactivation";
 import GitHubProfile from "./GitHubProfile";
+import GitHubRepositoryManagement from "./GitHubRepositoryManagement";
 
 interface GitHubConnection {
   githubUserId: string;
@@ -29,6 +30,7 @@ const GitHubConnected = ({ connection }: GitHubConnectedProps) => {
           <GitHubDeactivation />
         </div>
       </div>
+      <GitHubRepositoryManagement/>
     </div>
   );
 };
