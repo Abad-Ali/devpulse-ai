@@ -1,7 +1,7 @@
 import express from "express";
-import { isAuthenticated } from "../middleware/isAuthenticated.js";
-import { deactivateGitHub,  getGitHubStatus, githubCallback, reconnectGitHub } from "../controllers/github.controller.js";
-import rateLimiter from "../middleware/rateLimiter.js";
+import { isAuthenticated } from "../../middleware/isAuthenticated.js";
+import rateLimiter from "../../middleware/rateLimiter.js";
+import { deactivateGitHub, getGitHubStatus, githubCallback, reconnectGitHub } from "../../controllers/github/githubConnection.controller.js";
 
 
 const router = express.Router();

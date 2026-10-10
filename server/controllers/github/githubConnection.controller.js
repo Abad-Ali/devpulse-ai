@@ -1,4 +1,4 @@
-import { connectGitHubService, getGitHubStatusService, deactivateGitHubService, reconnectGitHubService } from "../services/github.service.js";
+import { connectGitHubService, deactivateGitHubService, getGitHubStatusService, reconnectGitHubService } from "../../services/github/githubConnection.service.js";
 
 // GitHub Callback
 export const githubCallback = async (req, res, next) => {

@@ -1,5 +1,5 @@
 import axios from "axios";
-import GitHubConnection from "../models/GitHubConnection.js";
+import GitHubConnection from "../../models/github/GitHubConnection.js";
 
 // Connect GitHub Service
 export const connectGitHubService = async ({ userId, code }) => {
