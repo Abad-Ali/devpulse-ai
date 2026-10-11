@@ -79,7 +79,7 @@ const GitHubAccessDialog = () => {
   return (
     <Dialog>
       <DialogTrigger className="w-full">
-        <Button type="button" variant="outline" className="h-9 w-full cursor-pointer border-black/10 bg-white px-2 text-[11px] font-medium text-black transition-colors hover:bg-black/[0.04] dark:border-white/10 dark:bg-black dark:text-white dark:hover:bg-white/[0.06] sm:px-3 sm:text-xs">
+        <Button type="button" variant="outline" className="h-9 w-full rounded-2xl cursor-pointer border-black/10 bg-white px-2 text-[11px] font-medium text-black transition-colors hover:bg-black/[0.04] dark:border-white/10 dark:bg-black dark:text-white dark:hover:bg-white/[0.06] sm:px-3 sm:text-xs">
           <KeyRound className="mr-1.5 size-3.5 shrink-0 sm:mr-2" />
           <span className="truncate">View Access</span>
         </Button>
