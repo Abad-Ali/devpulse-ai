@@ -147,3 +147,25 @@ export const createGitHubRepositoryService = async ({ userId, name, description 
     readmeWarning,
   };
 };
+
+export const getGitHubRepositoriesService = async ({ userId }) => {
+  if (!userId) {
+    const error = new Error("User ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+  if (!mongoose.isValidObjectId(userId)) {
+    const error = new Error("Invalid user ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const repositories = await GitHubRepository.find({ userId }).sort({ createdAt: -1 }).select("repositoryId repositoryName fullName description repositoryUrl visibility defaultBranch githubRepoCreatedAt createdAt updatedAt").lean();
+  if (repositories.length === 0) {
+    const error = new Error("No GitHub repositories found in database.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return repositories;
+};
