@@ -1,4 +1,4 @@
-import { createGitHubRepositoryService, getGitHubRepositoriesService } from "../../services/github/githubRepository.service.js";
+import { createGitHubRepositoryService, getGitHubRepositoriesService, getGitHubRepositoryService } from "../../services/github/githubRepository.service.js";
 
 export const createGitHubRepository =  async (req, res, next) => {
     try {
@@ -32,4 +32,21 @@ export const getGitHubRepositories =  async (req, res, next) => {
     } catch (error) {
         return next(error);
     }
+};
+
+export const getGitHubRepository = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const { repositoryId } = req.params;
+
+    const repository = await getGitHubRepositoryService({ userId, repositoryId });
+
+    return res.status(200).json({
+      success: true,
+      message: "GitHub repository fetched successfully.",
+      data: repository
+    });
+  } catch (error) {
+    return next(error);
+  }
 };
