@@ -9,6 +9,7 @@ import executionRoutes from './routes/execution.routes.js';
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import searchRoutes from "./routes/search.routes.js";
 import githubConnectionRoutes from "./routes/github/githubConnection.routers.js";
+import githubRepositoryRoutes from "./routes/github/githubRepository.routers.js";
 import { errorMiddleware } from "./middleware/error.middleware.js";
 import cookieParser from "cookie-parser";
 import passport from "./config/passport.js";
@@ -42,6 +43,7 @@ app.use("/api/v1/executions", executionRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/search", searchRoutes);
 app.use("/api/v1/github", githubConnectionRoutes);
+app.use("/api/v1/github", githubRepositoryRoutes);
 
 // Error handler
 app.use(errorMiddleware);
