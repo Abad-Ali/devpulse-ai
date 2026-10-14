@@ -169,3 +169,31 @@ export const getGitHubRepositoriesService = async ({ userId }) => {
 
   return repositories;
 };
+
+
+export const getGitHubRepositoryService = async ({ userId, repositoryId }) => {
+  if (!userId) {
+    const error = new Error("User ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+  if (!mongoose.isValidObjectId(userId)) {
+    const error = new Error("Invalid user ID.");
+    error.statusCode = 400;
+    throw error;
+  }
+  if (typeof repositoryId !== "string" || !repositoryId.trim()) {
+    const error = new Error("Repository ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const repository = await GitHubRepository.findOne({ userId, repositoryId: repositoryId.trim() }).select("repositoryId repositoryName fullName description repositoryUrl visibility defaultBranch githubRepoCreatedAt createdAt updatedAt").lean();
+  if (!repository) {
+    const error = new Error("GitHub repository not found in database.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return repository;
+};
