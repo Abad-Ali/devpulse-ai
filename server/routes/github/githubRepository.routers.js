@@ -6,5 +6,6 @@ const router = Router();
 
 router.post("/repositories", isAuthenticated, createGitHubRepository);
 router.get("/repositories", isAuthenticated, getGitHubRepositories);
+router.get( "/repositories/:repositoryId", isAuthenticated, getGitHubRepository);
 
 export default router;
