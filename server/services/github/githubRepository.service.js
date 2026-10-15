@@ -197,3 +197,141 @@ export const getGitHubRepositoryService = async ({ userId, repositoryId }) => {
 
   return repository;
 };
+
+export const updateGitHubRepositoryService = async ({ userId, repositoryId, name, description, visibility }) => {
+  if (!userId || !mongoose.isValidObjectId(userId)) {
+    const error = new Error("A valid user ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+  if (typeof repositoryId !== "string" || !repositoryId.trim()) {
+    const error = new Error("Repository ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const isNameProvided = name !== undefined;
+  const isDescriptionProvided = description !== undefined;
+  const isVisibilityProvided = visibility !== undefined;
+  if (!isNameProvided && !isDescriptionProvided && !isVisibilityProvided) {
+    const error = new Error("Provide at least one field to update.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Prepare the payload for GitHub's API
+  const githubUpdatePayload = {};
+
+  if (isNameProvided) {
+    if (typeof name !== "string" || !name.trim()) {
+      const error = new Error("Repository name must be a non-empty string.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    githubUpdatePayload.name = name.trim();
+  }
+  if (isDescriptionProvided) {
+    if (typeof description !== "string") {
+      const error = new Error("Repository description must be a string.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (description.length > 350) {
+      const error = new Error("Repository description cannot exceed 350 characters.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    githubUpdatePayload.description = description;
+  }
+  if (isVisibilityProvided) {
+    if (!["public", "private"].includes(visibility)) {
+      const error = new Error("Visibility must be public or private.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    githubUpdatePayload.private = visibility === "private";
+  }
+
+  // Find the existing repository owned by the authenticated user
+  const existingRepository = await GitHubRepository.findOne({ userId, repositoryId: repositoryId.trim() }).lean();
+  if (!existingRepository) {
+    const error = new Error("GitHub repository not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  // Check whether any submitted value has changed
+  const isNameUnchanged = name === undefined || name.trim() === existingRepository.repositoryName;
+  const isDescriptionUnchanged = description === undefined || description === existingRepository.description;
+  const isVisibilityUnchanged = visibility === undefined || visibility === existingRepository.visibility;
+  if (isNameUnchanged && isDescriptionUnchanged && isVisibilityUnchanged) {
+    const error = new Error("No changes detected. Please provide a different name, description, or visibility.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Get the user's connected GitHub account and access token
+  const githubConnection = await GitHubConnection.findOne({ userId, isConnected: true }).select("+accessToken");
+  if (!githubConnection?.accessToken) {
+    const error = new Error("Please connect your GitHub account first.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Get the repository owner's username and the current repository name
+  const [repositoryOwner, currentRepositoryName] = existingRepository.fullName.split("/");
+  if (!repositoryOwner || !currentRepositoryName) {
+    const error = new Error("The saved GitHub repository details are invalid.");
+    error.statusCode = 500;
+    throw error;
+  }
+
+  let updatedGitHubRepository;
+
+  // Update the repository on GitHub
+  try {
+    const githubResponse = await githubApi.patch(`/repos/${encodeURIComponent(repositoryOwner)}/${encodeURIComponent(currentRepositoryName)}`, githubUpdatePayload, {
+        headers: {
+          Authorization: `Bearer ${githubConnection.accessToken}`,
+        },
+      }
+    );
+
+    updatedGitHubRepository = githubResponse.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw getGitHubError(error, "Failed to update GitHub repository.");
+    }
+
+    throw error;
+  }
+
+  // Update the saved repository details in MongoDB
+  const repositoryDetails = {
+    repositoryName: updatedGitHubRepository.name,
+    fullName: updatedGitHubRepository.full_name,
+    description: updatedGitHubRepository.description || "",
+    repositoryUrl: updatedGitHubRepository.html_url,
+    visibility: updatedGitHubRepository.private ? "private" : "public",
+    defaultBranch: updatedGitHubRepository.default_branch || existingRepository.defaultBranch || "main"
+  };
+  
+  // updating the repo details in DB
+  const updatedRepository = await GitHubRepository.findOneAndUpdate( { userId, repositoryId: String(updatedGitHubRepository.id) },
+    { $set: repositoryDetails },
+    { new: true, runValidators: true }
+  ).select("repositoryId repositoryName fullName description repositoryUrl visibility defaultBranch githubRepoCreatedAt createdAt updatedAt").lean();
+  
+  if (!updatedRepository) {
+    const error = new Error("Repository updated on GitHub, but failed to update it in the database.");
+    error.statusCode = 500;
+    error.githubUpdated = true;
+    throw error;
+  }
+  
+  return updatedRepository;
+};
