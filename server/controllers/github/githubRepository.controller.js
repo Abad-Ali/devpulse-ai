@@ -1,4 +1,4 @@
-import { createGitHubRepositoryService, getGitHubRepositoriesService, getGitHubRepositoryService } from "../../services/github/githubRepository.service.js";
+import { createGitHubRepositoryService, getGitHubRepositoriesService, getGitHubRepositoryService, updateGitHubRepositoryService } from "../../services/github/githubRepository.service.js";
 
 export const createGitHubRepository =  async (req, res, next) => {
     try {
@@ -45,6 +45,30 @@ export const getGitHubRepository = async (req, res, next) => {
       success: true,
       message: "GitHub repository fetched successfully.",
       data: repository
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const updateGitHubRepository = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const { repositoryId } = req.params;
+    const { name, description, visibility } = req.body;
+
+    if (!userId) {
+      const error = new Error("Authentication is required.");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const updatedRepository = await updateGitHubRepositoryService({ userId, repositoryId, name, description, visibility });
+
+    return res.status(200).json({
+      success: true,
+      message: "GitHub repository updated successfully.",
+      data: updatedRepository,
     });
   } catch (error) {
     return next(error);
