@@ -335,3 +335,97 @@ export const updateGitHubRepositoryService = async ({ userId, repositoryId, name
   
   return updatedRepository;
 };
+
+export const deleteGitHubRepositoryService = async ({ userId, repositoryId, deletionScope }) => {
+  if (!userId || !mongoose.isValidObjectId(userId)) {
+    const error = new Error("A valid user ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+  if (typeof repositoryId !== "string" || !repositoryId.trim()) {
+    const error = new Error("Repository ID is required.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Validate the deletion scope
+  const allowedDeletionScopes = ["local", "everywhere"];
+  if (!allowedDeletionScopes.includes(deletionScope)) {
+    const error = new Error("Invalid deletion scope. Use 'local' or 'everywhere'.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Find the repository owned by the authenticated user
+  const existingRepository = await GitHubRepository.findOne({ userId, repositoryId: repositoryId.trim() }).lean();
+  if (!existingRepository) {
+    const error = new Error("GitHub repository not found.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  // Remove only the saved DevPulse AI record
+  if (deletionScope === "local") {
+    const deletedRepository = await GitHubRepository.findOneAndDelete({ userId, repositoryId: repositoryId.trim() }).lean();
+    if (!deletedRepository) {
+      const error = new Error("Failed to remove the repository from DevPulse AI.");
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return {
+      deletionScope: "local",
+      repositoryId: deletedRepository.repositoryId,
+      repositoryName: deletedRepository.repositoryName,
+      message: "Repository removed from DevPulse AI successfully."
+    };
+  }
+
+  // Get the user's connected GitHub account and access token
+  const githubConnection = await GitHubConnection.findOne({ userId, isConnected: true }).select("+accessToken");
+  if (!githubConnection?.accessToken) {
+    const error = new Error("Please connect your GitHub account.");
+
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Get the repository owner's username and repository name.
+  const [repositoryOwner, currentRepositoryName] = existingRepository.fullName.split("/");
+  if (!repositoryOwner || !currentRepositoryName) {
+    const error = new Error("The saved GitHub repository details are invalid.");
+    error.statusCode = 500;
+    throw error;
+  }
+
+  // Delete the repository from GitHub first
+  try {
+    await githubApi.delete(`/repos/${encodeURIComponent(repositoryOwner)}/${encodeURIComponent(currentRepositoryName)}`, {
+        headers: {
+          Authorization: `Bearer ${githubConnection.accessToken}`,
+        },
+      }
+    );
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw getGitHubError(error, "Failed to delete the repository from GitHub.");
+    }
+    throw error;
+  }
+
+  // Remove the saved record after GitHub confirms deletion
+  const deletedRepository = await GitHubRepository.findOneAndDelete({ userId, repositoryId: String(existingRepository.repositoryId) }).lean();
+  if (!deletedRepository) {
+    const error = new Error("The repository was deleted from GitHub, but its DevPulse AI record could not be removed.");
+    error.statusCode = 500;
+    error.githubDeleted = true;
+    throw error;
+  }
+
+  return {
+    deletionScope: "everywhere",
+    repositoryId: deletedRepository.repositoryId,
+    repositoryName: deletedRepository.repositoryName,
+    message: "Repository deleted from GitHub and DevPulse AI successfully."
+  };
+};
