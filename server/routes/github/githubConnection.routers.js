@@ -13,7 +13,7 @@ router.get("/connect",rateLimiter({windowMs: 10 * 60 * 1000, limit: 10}), isAuth
       client_id: process.env.GITHUB_CLIENT_ID,
       redirect_uri:
         process.env.GITHUB_INTEGRATION_CALLBACK_URL,
-      scope: "user:email repo offline_access",
+      scope: "user:email repo delete_repo offline_access",
     });
 
     return res.redirect(`https://github.com/login/oauth/authorize?${params.toString()}`);
