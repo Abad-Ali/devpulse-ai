@@ -1,4 +1,4 @@
-import { createGitHubRepositoryService, getGitHubRepositoriesService, getGitHubRepositoryService, updateGitHubRepositoryService } from "../../services/github/githubRepository.service.js";
+import { createGitHubRepositoryService, deleteGitHubRepositoryService, getGitHubRepositoriesService, getGitHubRepositoryService, updateGitHubRepositoryService } from "../../services/github/githubRepository.service.js";
 
 export const createGitHubRepository =  async (req, res, next) => {
     try {
@@ -69,6 +69,32 @@ export const updateGitHubRepository = async (req, res, next) => {
       success: true,
       message: "GitHub repository updated successfully.",
       data: updatedRepository,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const deleteGitHubRepository = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const { repositoryId } = req.params;
+    const { deletionScope } = req.body;
+
+    // Check whether the user is authenticated.
+    if (!userId) {
+      const error = new Error("Authentication is required.");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    // Delete the repository using the requested scope.
+    const result = await deleteGitHubRepositoryService({ userId, repositoryId, deletionScope });
+
+    return res.status(200).json({
+      success: true,
+      message: result.message,
+      data: result,
     });
   } catch (error) {
     return next(error);
