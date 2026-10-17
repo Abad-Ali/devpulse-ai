@@ -3,6 +3,7 @@ import { BookOpen, FolderGit2, KeyRound, Plus, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import GitHubIntegrationDialog from "./management-dialogs/GitHubIntegrationDialog";
 import GitHubAccessDialog from "./management-dialogs/GitHubAccessDialog";
+import Link from "next/link";
 
 const GitHubRepositoryManagement = () => {
   return (
@@ -78,10 +79,12 @@ const GitHubRepositoryManagement = () => {
             </div>
 
             <div className="mt-auto pt-5 sm:pt-6">
-              <Button type="button" variant="outline" className="h-9 w-full rounded-2xl cursor-pointer border-black/10 bg-white px-2 text-[11px] font-medium text-black transition-colors hover:bg-black/[0.04] dark:border-white/10 dark:bg-black dark:text-white dark:hover:bg-white/[0.06] sm:px-3 sm:text-xs">
-                <Settings2 className="mr-1.5 size-3.5 shrink-0 sm:mr-2" />
-                <span>Update <span className="hidden md:inline">Repositories</span></span>
-              </Button>
+              <Link href={'/github/manage/repositories'}>
+                <Button type="button" variant="outline" className="h-9 w-full rounded-2xl cursor-pointer border-black/10 bg-white px-2 text-[11px] font-medium text-black transition-colors hover:bg-black/[0.04] dark:border-white/10 dark:bg-black dark:text-white dark:hover:bg-white/[0.06] sm:px-3 sm:text-xs">
+                  <Settings2 className="mr-1.5 size-3.5 shrink-0 sm:mr-2" />
+                  <span>Manage{" "}<span className="hidden md:inline">Repositories</span></span>
+                </Button>
+              </Link>
             </div>
           </div>
 
