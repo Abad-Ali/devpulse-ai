@@ -160,7 +160,7 @@ export const getGitHubRepositoriesService = async ({ userId }) => {
     throw error;
   }
 
-  const repositories = await GitHubRepository.find({ userId }).sort({ createdAt: -1 }).select("repositoryId repositoryName fullName description repositoryUrl visibility defaultBranch githubRepoCreatedAt createdAt updatedAt").lean();
+  const repositories = await GitHubRepository.find({ userId }).sort({ createdAt: -1 }).select("_id repositoryId repositoryName fullName description visibility").lean();
   if (repositories.length === 0) {
     const error = new Error("No GitHub repositories found in database.");
     error.statusCode = 404;
