@@ -18,3 +18,9 @@ export const reconnectGitHub = async () => {
   const resp = await api.post("/github/reconnect");
   return resp.data;
 };
+
+// Get connected user's GitHub repositories
+export const getGitHubRepositories = async () => {
+  const resp = await api.get("/github/repositories");
+  return resp.data;
+};
