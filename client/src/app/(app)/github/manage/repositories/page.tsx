@@ -8,6 +8,7 @@ import { getGitHubRepositories } from "@/lib/api/github.api";
 import { setRepositories } from "@/lib/redux/features/github/githubRepositoriesSlice";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import GitHubRepositoryList from "@/app/components/manage-repositories/GitHubRepositoryList";
 
 const GitHubManageRepositoriesPage = () => {
   const dispatch = useAppDispatch();
@@ -92,6 +93,7 @@ const GitHubManageRepositoriesPage = () => {
       <div className="pointer-events-none absolute -bottom-40 left-1/3 size-[30rem] rounded-full bg-foreground/[0.02] blur-3xl" />
     
       <GitHubRepositoriesHeader/>
+      <GitHubRepositoryList/>
     </main>
   );
 };
