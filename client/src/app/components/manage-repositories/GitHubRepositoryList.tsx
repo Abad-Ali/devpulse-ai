@@ -92,7 +92,7 @@ const GitHubRepositoryList = () => {
                     </div>
 
                     <Button size="sm" className="h-9 cursor-pointer rounded-xl px-3.5 text-xs font-medium">
-                      <Link href={`/github/manage/repositories/${repository.repositoryId}}`} className="flex">
+                      <Link href={`/github/manage/repositories/${repository.repositoryId}`} className="flex">
                         Manage Repository
                         <ArrowUpRight className="ml-2 size-3.5"/>
                       </Link>
