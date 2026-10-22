@@ -5,10 +5,13 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, GitBranch, Layers3, ShieldCheck, CheckCircle2, BadgeCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
 import CreateGitHubRepositoryDialog from "./CreateGitHubRepositoryDialog";
+import GitHubRepositoriesSearch from "./GitHubRepositoriesSearch";
+import { useAppSelector } from "@/lib/redux/hooks";
 
 const GitHubRepositoriesHeader = () => {
+  const repositories = useAppSelector((state) => state.githubRepositories.repositories);
+
   return (
     <motion.section initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease: "easeOut" }} className="relative isolate w-full overflow-hidden rounded-2xl border border-black/[0.08] bg-white/5 shadow-sm backdrop-blur-xs dark:border-white/[0.08] dark:bg-[#15171B]/5">
 
@@ -54,7 +57,7 @@ const GitHubRepositoriesHeader = () => {
 
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <Button className="cursor-pointer">
-                <Link href="https://github.com" target="_blank" rel="noopener noreferrer" className="flex">
+                <Link href={repositories[0]?.fullName ? `https://github.com/${repositories[0].fullName.split("/")[0]}` : "https://github.com"} target="_blank" rel="noopener noreferrer" className="flex">
                   Visit GitHub
                   <ArrowUpRight className="ml-2 size-4" />
                 </Link>
@@ -64,16 +67,16 @@ const GitHubRepositoriesHeader = () => {
                 <CreateGitHubRepositoryDialog/>
               </div>
 
-              <Button variant="outline" className="h-9 cursor-pointer rounded-2xl border-black/10 bg-white px-2 text-[11px] font-medium text-black transition-colors hover:bg-black/[0.04] dark:border-white/10 dark:bg-black dark:text-white dark:hover:bg-white/[0.06] sm:px-3 sm:text-xs">
+              <Button variant="outline" className="group h-9 cursor-pointer rounded-2xl border-black/10 bg-white px-2 text-[11px] font-medium text-black transition-colors hover:bg-black/[0.04] dark:border-white/10 dark:bg-black dark:text-white dark:hover:bg-white/[0.06] sm:px-3 sm:text-xs">
                 <Link href="/github" className="flex">
-                  <Image src="/assets/github.svg" alt="GitHub" width={16} height={16} className="mr-2 size-4 invert dark:invert-0"/>
+                  <Image src="/assets/github.svg" alt="GitHub" width={16} height={16} className="mr-2 size-4 invert dark:invert-0 shrink-0 transition-transform duration-300 group-hover:scale-110"/>
                   GitHub Connected
                   <BadgeCheck className="size-4 text-emerald-500 ml-2"/>
                 </Link>
               </Button>
 
               <div className="h-9">
-                <Input placeholder="Serarch your repositories"/>
+                <GitHubRepositoriesSearch/>
               </div>
             </div>
           </div>
