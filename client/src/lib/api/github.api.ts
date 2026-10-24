@@ -29,3 +29,8 @@ export const createGitHubRepository = async (data: {name: string, description: s
   const resp = await api.post("/github/repositories", data);
   return resp.data;
 };
+
+export const getGitHubRepository = async (repositoryId: string) => {
+  const resp = await api.get(`/github/repositories/${repositoryId}`);
+  return resp.data;
+};
