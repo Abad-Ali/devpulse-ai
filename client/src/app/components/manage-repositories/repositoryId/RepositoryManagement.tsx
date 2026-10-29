@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { Pencil, Trash2, Database, ChevronRight, Unplug } from "lucide-react";
+import UpdateRepositoryDialog from "./UpdateRepositoryDialog";
 
 interface RepositoryManagementProps {
   repository: {
@@ -47,10 +48,9 @@ const RepositoryManagement = ({ repository }: RepositoryManagementProps) => {
 
         <div className="space-y-1 p-2 sm:p-3">
           {/* Update repository */}
-          UpdateRepositoryDialog
+          <UpdateRepositoryDialog repository={repository}/>
 
           {/* Delete repository */}
-          DeleteRepositoryDialog
         </div>
       </div>
 
@@ -74,7 +74,6 @@ const RepositoryManagement = ({ repository }: RepositoryManagementProps) => {
 
         <div className="space-y-1 p-2 sm:p-3">
           {/* Remove from DevPulse AI */}
-          RemoveRepositoryDialog 
         </div>
       </div>
 
