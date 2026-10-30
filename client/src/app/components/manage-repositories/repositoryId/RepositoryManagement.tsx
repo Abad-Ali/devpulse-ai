@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { Pencil, Trash2, Database, ChevronRight, Unplug } from "lucide-react";
 import UpdateRepositoryDialog from "./UpdateRepositoryDialog";
+import DeleteRepositoryDialog from "./DeleteRepositoryDialog";
 
 interface RepositoryManagementProps {
   repository: {
@@ -51,6 +52,7 @@ const RepositoryManagement = ({ repository }: RepositoryManagementProps) => {
           <UpdateRepositoryDialog repository={repository}/>
 
           {/* Delete repository */}
+          <DeleteRepositoryDialog repository_Id={repository._id} repositoryId={repository.repositoryId} repositoryFullName={repository.fullName}/>
         </div>
       </div>
 
