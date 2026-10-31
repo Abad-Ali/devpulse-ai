@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Pencil, Trash2, Database, ChevronRight, Unplug } from "lucide-react";
 import UpdateRepositoryDialog from "./UpdateRepositoryDialog";
 import DeleteRepositoryDialog from "./DeleteRepositoryDialog";
+import RemoveRepositoryDialog from "./RemoveRepositoryDialog";
 
 interface RepositoryManagementProps {
   repository: {
@@ -76,6 +77,7 @@ const RepositoryManagement = ({ repository }: RepositoryManagementProps) => {
 
         <div className="space-y-1 p-2 sm:p-3">
           {/* Remove from DevPulse AI */}
+          <RemoveRepositoryDialog repository_Id={repository._id} repositoryId={repository.repositoryId} repositoryFullName={repository.fullName}/>
         </div>
       </div>
 
