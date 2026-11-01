@@ -4,6 +4,7 @@ import { Search, Loader2, Lock, Globe2, Code2, ArrowUpRight } from "lucide-react
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useAppSelector } from "@/lib/redux/hooks";
+import Link from "next/link";
 
 const ProgramsSearch = () => {
   const [query, setQuery] = useState("");
@@ -72,7 +73,7 @@ const ProgramsSearch = () => {
             {results.length > 0 ? (
               <div className="space-y-2">
                 {results.map((program) => (
-                  <button key={program.id} type="button" onClick={() => handleProgramClick(program.id)} className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl border border-black/[0.06] bg-black/[0.015] p-3 text-left transition-all duration-200 hover:border-[#FFAA00]/20 hover:bg-[#FFAA00]/[0.025] dark:border-white/[0.06] dark:bg-white/[0.02] dark:hover:border-[#FFAA00]/20 dark:hover:bg-white/[0.035]">
+                  <Link href={`/programs/${program.id}`} key={program.id} type="button" onClick={() => handleProgramClick(program.id)} className="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-xl border border-black/[0.06] bg-black/[0.015] p-3 text-left transition-all duration-200 hover:border-[#FFAA00]/20 hover:bg-[#FFAA00]/[0.025] dark:border-white/[0.06] dark:bg-white/[0.02] dark:hover:border-[#FFAA00]/20 dark:hover:bg-white/[0.035]">
                     <div className="pointer-events-none absolute -right-8 -top-8 h-16 w-16 rounded-full bg-[#FFAA00]/10 opacity-0 blur-2xl transition-opacity duration-200 group-hover:opacity-100" />
 
                     <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-black/[0.05] bg-black/[0.025] dark:border-white/[0.05] dark:bg-white/[0.04]">
@@ -93,7 +94,7 @@ const ProgramsSearch = () => {
                     </div>
 
                     <ArrowUpRight size={14} strokeWidth={1.8} className="relative shrink-0 text-black/15 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#FFAA00]/70 dark:text-white/15 dark:group-hover:text-[#FFAA00]/70" />
-                  </button>
+                  </Link>
                 ))}
               </div>
             ) : (

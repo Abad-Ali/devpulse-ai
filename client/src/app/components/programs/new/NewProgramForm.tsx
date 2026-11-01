@@ -126,8 +126,6 @@ const NewProgramForm = () => {
 
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="relative overflow-hidden rounded-[28px] border border-black/[0.08] bg-white/5 shadow-sm backdrop-blur-sm dark:border-white/[0.08] dark:bg-[#15171B]/5">
-          <div className="pointer-events-none absolute -right-28 -top-28 h-64 w-64 rounded-full bg-[#FFAA00]/[0.045] blur-[100px]" />
-
           <form onSubmit={handleSubmit} className="relative">
             <div className="border-b border-black/[0.06] px-6 py-5 dark:border-white/[0.06] sm:px-7">
               <div className="flex items-center gap-3">
@@ -257,8 +255,6 @@ const NewProgramForm = () => {
 
         <aside className="space-y-4 lg:sticky lg:top-5 lg:self-start">
           <div className="relative overflow-hidden rounded-[24px] border border-black/[0.08] bg-white/5 p-5 shadow-sm backdrop-blur-sm dark:border-white/[0.08] dark:bg-[#15171B]/5">
-            <div className="pointer-events-none absolute -right-12 -top-12 h-28 w-28 rounded-full bg-[#FFAA00]/[0.05] blur-3xl" />
-
             <div className="relative">
               <div className="mb-4 flex items-center justify-between">
                 <div>

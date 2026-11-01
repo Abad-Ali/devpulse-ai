@@ -76,11 +76,6 @@ const DashboardGreeting = () => {
         </div>
 
         <div className="relative lg:flex min-h-[300px] items-center justify-center lg:min-h-[430px] hidden cursor-pointer">
-          <div className="pointer-events-none absolute left-1/2 top-1/2 h-52 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FF7700]/10 blur-[90px]" />
-
-          <div className="pointer-events-none absolute right-8 top-10 hidden h-px w-24 bg-gradient-to-r from-transparent via-black/[0.06] dark:via-white/[0.08] to-transparent sm:block" />
-          <div className="pointer-events-none absolute bottom-12 right-12 hidden h-px w-16 bg-gradient-to-r from-transparent to-[#FFAA00]/20 sm:block" />
-
           <div className="relative z-10 w-full">
             <LaptopModel />
           </div>

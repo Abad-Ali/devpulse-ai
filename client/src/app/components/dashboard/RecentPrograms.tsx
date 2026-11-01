@@ -66,8 +66,6 @@ const RecentPrograms = ({ programs }: RecentProgramsProps) => {
             const color = getLanguageColor(program.language);
             return (
               <Link key={program.id} href={`/programs/${program.id}`} className="group relative overflow-hidden rounded-2xl border border-black/[0.06] dark:border-white/[0.06] bg-black/[0.015] dark:bg-white/[0.02] p-4 transition duration-200 hover:border-black/[0.14] dark:hover:border-white/[0.11] hover:bg-black/[0.03] dark:hover:bg-white/[0.04]">
-                <div className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full opacity-[0.05] dark:opacity-[0.07] blur-2xl transition-opacity group-hover:opacity-[0.10] dark:group-hover:opacity-[0.13]" style={{ backgroundColor: color }} />
-                
                 <div className="relative flex items-start justify-between">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-black/[0.04] dark:bg-white/[0.05]">
                     <FileCode2 size={17} strokeWidth={1.7} className="text-black/40 dark:text-white/45 transition group-hover:text-[#FF7700] dark:group-hover:text-[#FFAA00]" />
