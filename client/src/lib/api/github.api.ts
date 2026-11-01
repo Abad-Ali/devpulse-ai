@@ -34,3 +34,13 @@ export const getGitHubRepository = async (repositoryId: string) => {
   const resp = await api.get(`/github/repositories/${repositoryId}`);
   return resp.data;
 };
+
+export const updateGitHubRepository = async (repositoryId: string, data: {name: string, description: string, visibility: "public" | "private"}) => {
+  const resp = await api.patch(`/github/repositories/${repositoryId}`, data);
+  return resp.data;
+};
+
+export const deleteGitHubRepository = async (repositoryId: string, data: {deletionScope: "local" | "everywhere"}) => {
+  const resp = await api.delete(`/github/repositories/${repositoryId}`, {data});
+  return resp.data;
+};
