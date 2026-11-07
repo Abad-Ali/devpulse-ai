@@ -5,6 +5,7 @@ import MountainBackground from "@/app/components/background/MountainBackground";
 import EmailSignup from "@/app/components/auth/EmailSignup";
 import SignupOptions from "@/app/components/auth/SignupOptions";
 import { useState } from "react";
+import AccountHelpAssistant from "@/app/components/auth/AccountHelpAssistant";
 
 export default function SignupPage() {
   const [showEmailSignup, setShowEmailSignup] = useState(false);
@@ -39,6 +40,7 @@ export default function SignupPage() {
           )
         }
       </div>
+      <AccountHelpAssistant/>
     </main>
   );
 }

@@ -5,6 +5,7 @@ import MountainBackground from "@/app/components/background/MountainBackground";
 import SigninOptions from "@/app/components/auth/SigninOptions";
 import { useState } from "react";
 import EmailSignIn from "@/app/components/auth/EmailSignin";
+import AccountHelpAssistant from "@/app/components/auth/AccountHelpAssistant";
 
 export default function LoginPage() {
   const [showEmailSignin, setShowEmailSignin] = useState(false);
@@ -40,6 +41,7 @@ export default function LoginPage() {
           )
         }
       </div>
+      <AccountHelpAssistant/>
     </main>
   );
 }
