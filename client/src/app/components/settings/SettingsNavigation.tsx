@@ -30,7 +30,7 @@ const navigation = [
 
 const SettingsNavigation = ({ activeSection, onSectionChange }: SettingsNavigationProps) => {
   return (
-    <aside className="w-full space-y-5 sm:border-r sm::pr-3">
+    <aside className="w-full space-y-5 sm:border-r sm:pr-3">
       <div className="px-3">
         <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
           Settings
