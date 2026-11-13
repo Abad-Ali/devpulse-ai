@@ -1,4 +1,5 @@
 "use client";
+import AccountSettings from "@/app/components/settings/AccountSettings";
 import SettingsHeader from "@/app/components/settings/SettingsHeader";
 import SettingsNavigation from "@/app/components/settings/SettingsNavigation";
 import { useState } from "react";
@@ -15,6 +16,10 @@ const SettingsPage = () => {
 
       <div className="grid grid-cols-1 gap-7 border-t border-border/60 pt-7 lg:grid-cols-[230px_minmax(0,1fr)]">
         <SettingsNavigation activeSection={activeSection} onSectionChange={setActiveSection}/>
+
+        <section className="min-w-0">
+          {activeSection === "account" && <AccountSettings/>}
+        </section>
       </div>
     </main>
   );
