@@ -1,7 +1,9 @@
 "use client";
 import AccountSettings from "@/app/components/settings/AccountSettings";
+import GitHubSettings from "@/app/components/settings/GitHubSettings";
 import SettingsHeader from "@/app/components/settings/SettingsHeader";
 import SettingsNavigation from "@/app/components/settings/SettingsNavigation";
+import UsageSettings from "@/app/components/settings/UsageSettings";
 import { useState } from "react";
 
 export type SettingsSection = "account" | "github" | "usage";
@@ -19,6 +21,8 @@ const SettingsPage = () => {
 
         <section className="min-w-0">
           {activeSection === "account" && <AccountSettings/>}
+          {activeSection === "github" && <GitHubSettings/>}
+          {activeSection === "usage" && <UsageSettings/>}
         </section>
       </div>
     </main>
