@@ -27,13 +27,16 @@ const githubRepositoriesSlice = createSlice({
       state.repositories = action.payload;
     },
 
-    setSelectedRepository: (state, action: PayloadAction<GitHubRepository | null>) => {
+    setSelectedRepository: (
+      state,
+      action: PayloadAction<GitHubRepository | null>,
+    ) => {
       state.selectedRepository = action.payload;
     },
 
     updateRepository: (state, action: PayloadAction<GitHubRepository>) => {
       const index = state.repositories.findIndex(
-        (repository) => repository._id === action.payload._id
+        (repository) => repository._id === action.payload._id,
       );
 
       if (index !== -1) {
@@ -41,9 +44,23 @@ const githubRepositoriesSlice = createSlice({
       }
     },
 
+    upsertRepository: (state, action: PayloadAction<GitHubRepository>) => {
+      const index = state.repositories.findIndex(
+        (repository) =>
+          repository._id === action.payload._id ||
+          repository.repositoryId === action.payload.repositoryId,
+      );
+
+      if (index !== -1) {
+        state.repositories[index] = action.payload;
+      } else {
+        state.repositories.unshift(action.payload);
+      }
+    },
+
     removeRepository: (state, action: PayloadAction<string>) => {
       state.repositories = state.repositories.filter(
-        (repository) => repository._id !== action.payload
+        (repository) => repository._id !== action.payload,
       );
 
       if (state.selectedRepository?._id === action.payload) {
@@ -62,6 +79,14 @@ const githubRepositoriesSlice = createSlice({
   },
 });
 
-export const { setRepositories, setSelectedRepository, updateRepository, removeRepository, clearRepositories, clearSelectedRepository } = githubRepositoriesSlice.actions;
+export const {
+  setRepositories,
+  setSelectedRepository,
+  updateRepository,
+  upsertRepository,
+  removeRepository,
+  clearRepositories,
+  clearSelectedRepository,
+} = githubRepositoriesSlice.actions;
 
 export default githubRepositoriesSlice.reducer;
