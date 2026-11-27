@@ -1,5 +1,6 @@
 import { getMyProgramService } from "../services/program.service.js";
 import { deleteAccountService, getMyProfileService, getProfileService, setOrChangePasswordService, updateMyProfileService } from "../services/user.service.js";
+import uploadAvatar from "./uploadAvatar.js";
 
 // To get my Profile
 export const getMyProfile = async (req, res, next) => {
@@ -22,7 +23,12 @@ export const getMyProfile = async (req, res, next) => {
 export const updateMyProfile = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const {name, username, bio, avatar} = req.body;
+    const {name, username, bio} = req.body;
+    
+    let avatar;
+    if (req.file) {
+      avatar = await uploadAvatar(req.file.buffer);
+    }
 
     const user = await updateMyProfileService(userId, {name, username, bio, avatar});
 
